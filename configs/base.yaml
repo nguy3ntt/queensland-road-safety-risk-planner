@@ -1,0 +1,55 @@
+config_version: 1
+
+project:
+  name: queensland-road-segment-crash-risk
+  timezone: Australia/Brisbane
+  random_seed: 20260925
+
+paths:
+  data_root: data
+  reports_root: reports/generated
+  artifacts_root: artifacts
+
+study:
+  geography: Queensland
+  spatial_unit: road_segment
+  cadence: quarterly
+  forecast_horizon_periods: 1
+  primary_outcome: serious_crash_occurrence
+  serious_severities:
+    - fatal
+    - hospitalisation
+  recent_label_buffer_months: 12
+
+segmentation:
+  strategy: unresolved
+  target_length_m: null
+  projected_crs: unresolved
+
+map_matching:
+  initial_search_radius_m: 40
+  ambiguity_margin_m: 5
+  require_quality_report: true
+
+exposure:
+  preferred_measure: vehicle_kilometres_travelled
+  allow_imputation: false
+  missing_policy: separate_evaluation_tier
+
+evaluation:
+  primary_scheme: rolling_origin
+  geographic_holdout: true
+  calibration_window_periods: 4
+  ranking_budgets:
+    - 50
+    - 100
+    - 250
+    - 0.01
+    - 0.05
+  primary_metric: serious_crash_recall_at_budget
+
+guardrails:
+  causal_claims_allowed: false
+  intervention_recommendations_allowed: false
+  random_split_as_headline_allowed: false
+  raw_data_in_git_allowed: false

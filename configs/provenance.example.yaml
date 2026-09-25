@@ -1,0 +1,14 @@
+manifest_version: 1
+source:
+  source_id: qld_crash_locations
+  acquisition_status: planned
+  publisher: Queensland Department of Transport and Main Roads
+  landing_page: https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads
+  resource_url: null
+  retrieved_at_utc: null
+  licence: null
+  sha256: null
+  bytes: null
+  source_modified_at: null
+  local_relative_path: null
+  notes: Exact resource and publisher metadata must be verified during Milestone 1.

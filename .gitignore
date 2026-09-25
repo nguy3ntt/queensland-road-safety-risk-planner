@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments and local settings
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.python-version
+
+# Local agent instructions, work logs and private planning notes
+AGENTS.md
+QUICK_START_PROMPT.md
+.agents/
+.codex/
+PROGRESS.md
+progress/
+TODO.local.md
+*.local.md
+notes/private/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Raw/intermediate data and large artifacts
+data/raw/**
+data/interim/**
+data/processed/**
+data/external/**
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+
+# Models, caches and generated map assets
+models/**
+artifacts/**
+cache/**
+tiles/**
+
+# Generated reports, except documentation placeholders
+reports/generated/**
+
+# Notebook outputs
+.ipynb_checkpoints/
+
+# Local scratch and temporary exports
+scratch/
+tmp/
+*.tmp
+*.bak
