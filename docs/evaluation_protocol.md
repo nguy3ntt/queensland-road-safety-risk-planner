@@ -22,6 +22,11 @@ test:        2021 Q1–2021 Q4
 
 Actual dates depend on verified coverage and disruption periods. Multiple test years are required. Hyperparameter selection must not use the final test period.
 
+Milestone 3 implementation uses three expanding origins. Each has a four-quarter calibration block
+and a following four-quarter test block; together the prediction cutoffs cover 2021 Q2 through
+2024 Q1 and their forecast quarters cover 2021 Q3 through 2024 Q2 without overlap. Exact row keys
+and dates are retained in the generated fold manifest.
+
 ## Geographic design
 
 At least one experiment must hold out complete, connected geographic areas. Candidate grouping units include:
@@ -33,6 +38,12 @@ At least one experiment must hold out complete, connected geographic areas. Cand
 
 Select the unit after testing boundary and sample-size suitability. Report whether held-out regions are represented by similar road classes in training.
 
+Milestone 3 uses Brisbane City as the first complete geographic holdout because it has enough
+eligible segments and materially weaker exposure coverage than many other large LGAs. The final
+four test quarters contain only Brisbane rows; all Brisbane rows are excluded from fitting and
+calibration. Later milestones should add other regions rather than treating one city as universal
+transfer evidence.
+
 ## Baselines
 
 - global and road-class prevalence;
@@ -42,6 +53,10 @@ Select the unit after testing boundary and sample-size suitability. Report wheth
 - negative-binomial regression with exposure;
 - boosted trees without graph information;
 - boosted trees with lagged neighbour aggregates.
+
+The completed Milestone 3 baseline set stops before neighbour aggregates: historical density,
+empirical-Bayes rate, exposure-aware Poisson and a boosted tree using tabular panel features. Graph
+summaries belong to Milestone 4.
 
 ## Metrics
 
@@ -105,4 +120,3 @@ An advanced model may become the product model only if it:
 - provides acceptable scoring cost and operational stability.
 
 Otherwise, deploy the simpler model and retain the advanced method as a documented research result.
-

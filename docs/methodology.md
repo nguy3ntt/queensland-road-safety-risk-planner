@@ -29,6 +29,20 @@ At fine spatial and quarterly resolution, most segment-period rows will contain 
 
 Model choice must follow residual, calibration and out-of-time performance checks rather than the observed percentage of zeros alone.
 
+## Implemented statistical baselines
+
+Milestone 3 evaluates four fixed models on identical folds:
+
+- trailing 20-quarter serious-crash weight per kilometre;
+- Gamma-Poisson-style empirical-Bayes shrinkage toward training-only road-class rates;
+- regularised Poisson rate regression with quarterly VKT exposure weights, mathematically
+  equivalent to a log-exposure offset formulation;
+- deterministic LightGBM with a Poisson objective and no graph-derived inputs.
+
+Every model receives a multiplicative expected-count correction fitted on a later calibration
+block. Absolute-residual split-conformal intervals are diagnostic only; geographic undercoverage
+prevents a deployment claim.
+
 ## Graph construction
 
 Default graph:
@@ -105,4 +119,3 @@ Feature attribution should be accompanied by stability checks and correlated-fea
 - sample only for development, never for final headline evaluation without disclosure;
 - train graph models on subgraphs or neighbour sampling if the statewide graph is too large;
 - precompute map layers and batch predictions for serving.
-

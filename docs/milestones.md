@@ -21,6 +21,9 @@ Acceptance criteria:
 
 ## Milestone 1 — Source audit and geospatial feasibility
 
+**Status:** Complete on 25 September 2026 with a conditional go for a state-controlled-road
+Milestone 2 panel. See `reports/milestone_1_completion.md`.
+
 Deliverables:
 
 - exact official-source inventory with checksums and licences;
@@ -42,6 +45,9 @@ Acceptance criteria:
 
 ## Milestone 2 — Canonical road-segment panel
 
+**Status:** Complete on 26 September 2026 with a conditional go for Milestone 3 baselines on the
+verified-exposure state-controlled population. See `reports/milestone_2_completion.md`.
+
 Deliverables:
 
 - versioned road network and adjacency graph;
@@ -61,6 +67,9 @@ Acceptance criteria:
 - segment and event totals reconcile to documented exclusions.
 
 ## Milestone 3 — Statistical and operational baselines
+
+**Status:** Complete on 26 September 2026 with boosted tree selected as the chronological reference
+and empirical Bayes retained as the transfer challenger. See `reports/milestone_3_completion.md`.
 
 Deliverables:
 
@@ -161,4 +170,3 @@ Only after Milestone 7:
 - treatment-effect estimation using verified intervention histories;
 - active-learning workflow for analyst review;
 - multi-objective selection balancing risk, geography and inspection cost.
-

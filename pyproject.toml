@@ -18,13 +18,18 @@ dependencies = [
 [project.optional-dependencies]
 geo = [
   "geopandas>=1.0,<2",
+  "matplotlib>=3.9,<4",
   "networkx>=3.3,<4",
+  "numpy>=2.0,<2.5",
+  "openpyxl>=3.1,<4",
+  "pandas>=2.2,<3",
   "pyarrow>=17,<22",
+  "pyproj>=3.7,<4",
   "shapely>=2.0,<3",
 ]
 ml = [
   "lightgbm>=4.5,<5",
-  "numpy>=2.0,<3",
+  "numpy>=2.0,<2.5",
   "pandas>=2.2,<3",
   "scikit-learn>=1.5,<2",
   "statsmodels>=0.14,<1",
@@ -35,8 +40,11 @@ app = [
 ]
 dev = [
   "mypy>=1.11,<2",
+  "pandas-stubs>=2.2,<3",
   "pytest>=8.3,<9",
   "ruff>=0.6,<1",
+  "types-geopandas>=1.0,<2",
+  "types-networkx>=3.3,<4",
   "types-PyYAML>=6.0.12",
 ]
 

@@ -38,16 +38,19 @@ The project will build a reproducible pipeline from public Queensland data to a 
 - RQ4: Under a fixed investigation budget, which model captures the largest share of future serious crashes?
 - RQ5: How much performance degrades under geographic transfer to unseen regions and temporal regime shifts?
 
-## Intended prediction tasks
+## Prediction task
 
-The exact spatial and temporal resolutions will be chosen only after the data audit. The initial candidates are:
+Milestone 2 fixed the analytical unit and target after observing real map-matching ambiguity:
 
-- **Task A — serious-crash occurrence:** probability of at least one fatal or hospitalisation crash on a segment in the next quarter;
-- **Task B — casualty-crash count:** expected number of reported casualty crashes in the next quarter;
-- **Task C — severity mix:** conditional distribution of severity given that a crash occurs;
-- **Decision task:** rank road segments for investigation subject to a fixed capacity, such as the top 100 segments per quarter.
+- **Primary target:** conserved fractional weight of fatal or hospitalisation crashes allocated to
+  each eligible state-controlled segment in the next quarter;
+- **Secondary diagnostics:** any weighted occurrence and any unambiguous serious-crash occurrence;
+- **Decision task:** rank eligible segments for investigation subject to a fixed capacity, such as
+  the top 100 segments per quarter.
 
-Task A is the minimum viable research target. Tasks B and C are extensions, not prerequisites.
+The weighted count prevents one ambiguous junction event from becoming multiple full crashes when
+it has several credible candidate segments. Casualty-crash counts and severity mix remain later
+extensions.
 
 ## Modelling strategy
 
@@ -116,16 +119,33 @@ The final application should provide:
 │   ├── data_sources.md
 │   ├── decision_log.md
 │   ├── evaluation_protocol.md
+│   ├── manual_validation.md
 │   ├── methodology.md
 │   └── milestones.md
 ├── reports/                      # generated, reviewable evidence
 ├── src/qld_road_safety/
+│   ├── acquisition.py
 │   ├── cli.py
 │   ├── config.py
-│   └── contracts.py
+│   ├── contracts.py
+│   ├── feasibility.py
+│   ├── map_matching.py
+│   ├── canonical.py
+│   ├── panel.py
+│   ├── milestone2.py
+│   ├── baselines.py
+│   ├── evaluation.py
+│   └── milestone3.py
 ├── tests/
+│   ├── test_acquisition.py
 │   ├── test_config.py
-│   └── test_contracts.py
+│   ├── test_contracts.py
+│   ├── test_feasibility.py
+│   ├── test_map_matching.py
+│   ├── test_canonical.py
+│   ├── test_panel.py
+│   ├── test_baselines.py
+│   └── test_evaluation.py
 ├── .env.example
 ├── .gitignore
 └── pyproject.toml
@@ -138,7 +158,7 @@ Python 3.11 is recommended.
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,geo,ml]"
 qrs validate-config --config configs/base.yaml
 qrs validate-manifest --manifest configs/provenance.example.yaml
 pytest
@@ -147,7 +167,7 @@ pytest
 Using `uv` is also supported:
 
 ```powershell
-uv sync --extra dev
+uv sync --extra dev --extra geo --extra ml
 uv run qrs validate-config --config configs/base.yaml
 uv run pytest
 ```
@@ -167,14 +187,26 @@ explicit supported interpreter:
 
 ## Where to begin
 
-Start with **Milestone 0 and Milestone 1 only**. Do not train a model until the source inventory, schema audit, usable date range, road identifiers and crash-to-road map-matching quality have been reviewed. See [docs/milestones.md](docs/milestones.md).
+The next approved scope is **Milestone 4: graph and spatiotemporal modelling**. Any graph candidate
+must use the saved Milestone 3 folds and compare against both boosted tree and empirical Bayes.
+Complexity is justified only by a defensible improvement in future-period or geographic-transfer
+decision performance without materially worse calibration. See
+[docs/milestones.md](docs/milestones.md).
 
 ## Current status
 
-Milestone 0 is complete. The repository contains validated configuration and provenance contracts,
-scientific guardrails, a decision log, reproducible environment checks and tested project
-boundaries. See [reports/milestone_0_completion.md](reports/milestone_0_completion.md).
+Milestones 0 through 3 are complete. Milestone 3 evaluated historical density, empirical Bayes,
+exposure-aware Poisson and boosted trees over three rolling origins and a fully held-out Brisbane
+transfer test. Boosted tree is the chronological reference; empirical Bayes remains the transfer
+challenger. See [reports/milestone_3_completion.md](reports/milestone_3_completion.md).
 
-No source dataset has yet been downloaded, validated or successfully joined. Milestone 1 is the
-next approved scope; model-panel construction and training remain out of scope until its feasibility
-gate passes.
+The primary study population is state-controlled roads with verified exposure. A statewide
+all-road headline claim and naive nearest-segment labels are explicitly out of scope. The local
+panel contains 877,662 rows across 48,759 segments and 18 cutoffs; 764,342 rows are primary
+eligible. Baseline results are planning-support forecasts, not causal safety claims.
+
+To verify the retained Milestone 3 evidence quickly:
+
+```powershell
+.\scripts\smoke_milestone3.ps1
+```

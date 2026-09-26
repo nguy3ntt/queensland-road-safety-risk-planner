@@ -14,3 +14,18 @@ Expected reports include:
 - calibration and subgroup metrics;
 - model card.
 
+Completed Milestone 2 evidence:
+
+- `milestone_2_completion.md` — acceptance evidence and stop/go decision;
+- `milestone_2_panel_contract.md` — exact analytical and temporal contract;
+- `milestone_2_data_quality.md` — road, crash and exposure coverage;
+- `milestone_2_eda.md` — bounded panel diagnostics without model fitting;
+- `milestone_2_panel_coverage.png` and `milestone_2_crash_matching.png` — review figures.
+
+Completed Milestone 3 evidence:
+
+- `milestone_3_completion.md` — acceptance evidence and stop/go decision;
+- `milestone_3_evaluation.md` — rolling-origin, geographic, budget and subgroup results;
+- `milestone_3_calibration_and_uncertainty.md` — reliability and interval coverage;
+- `milestone_3_model_selection.md` — strongest-baseline decision and Milestone 4 comparison rule;
+- `milestone_3_top_k.png` and `milestone_3_calibration.png` — review figures.

@@ -25,7 +25,7 @@ if (-not (Test-Path -LiteralPath $Python)) {
 Push-Location $ProjectRoot
 try {
     Invoke-PythonCommand @("-m", "pip", "install", "--upgrade", "pip")
-    Invoke-PythonCommand @("-m", "pip", "install", "-e", ".[dev]")
+    Invoke-PythonCommand @("-m", "pip", "install", "-e", ".[dev,geo,ml]")
     Invoke-PythonCommand @("-m", "qld_road_safety.cli", "validate-config", "--config", "configs/base.yaml")
     Invoke-PythonCommand @("-m", "qld_road_safety.cli", "validate-manifest", "--manifest", "configs/provenance.example.yaml")
     Invoke-PythonCommand @("-m", "pytest")

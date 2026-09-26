@@ -13,28 +13,51 @@ paths:
 study:
   geography: Queensland
   spatial_unit: road_segment
+  primary_population: state_controlled_roads_with_verified_exposure
+  secondary_population: all_other_roads_audit_only
   cadence: quarterly
   forecast_horizon_periods: 1
-  primary_outcome: serious_crash_occurrence
+  primary_outcome: serious_crash_weighted_count
   serious_severities:
     - fatal
     - hospitalisation
   recent_label_buffer_months: 12
 
 segmentation:
-  strategy: unresolved
+  strategy: qrt_official_segment_with_junction_allocation
   target_length_m: null
-  projected_crs: unresolved
+  geometry_crs: EPSG:7844
+  projected_crs: EPSG:9473
+  distance_crs_policy: zone_appropriate_gda2020_mga
 
 map_matching:
   initial_search_radius_m: 40
   ambiguity_margin_m: 5
+  intersection_policy: retain_ambiguous_junction_candidates
   require_quality_report: true
 
 exposure:
   preferred_measure: vehicle_kilometres_travelled
   allow_imputation: false
   missing_policy: separate_evaluation_tier
+
+panel:
+  network_version: qrt_state_controlled_2026_09_26
+  source_snapshot_date: 2026-09-26
+  first_cutoff_date: 2019-12-31
+  last_cutoff_date: 2024-03-31
+  label_complete_through: 2024-06-30
+  crash_availability_lag_months: 12
+  traffic_release_month: 5
+  traffic_release_day: 31
+  traffic_availability_basis: publisher_schedule_april_may
+  lookback_quarters:
+    - 4
+    - 8
+    - 20
+  endpoint_snap_tolerance_m: 1.0
+  traffic_match_radius_m: 50.0
+  geometry_history_status: retrospective_current_snapshot
 
 evaluation:
   primary_scheme: rolling_origin
@@ -47,6 +70,25 @@ evaluation:
     - 0.01
     - 0.05
   primary_metric: serious_crash_recall_at_budget
+
+baselines:
+  run_version: baselines_v1_2026_09_26
+  target_column: serious_crash_weight_next_1q
+  exposure_column: exposure_proxy_vkt_next_1q
+  minimum_training_periods: 2
+  test_window_periods: 4
+  geographic_holdout_field: lga_name_left
+  geographic_holdout_value: Brisbane City
+  interval_coverage: 0.90
+  bootstrap_replicates: 1000
+  selection_budget_fraction: 0.01
+  poisson_alpha: 0.0001
+  poisson_max_iter: 300
+  boosted_learning_rate: 0.05
+  boosted_max_iter: 120
+  boosted_max_leaf_nodes: 15
+  boosted_min_samples_leaf: 100
+  boosted_l2_regularization: 1.0
 
 guardrails:
   causal_claims_allowed: false

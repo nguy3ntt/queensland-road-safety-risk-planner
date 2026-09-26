@@ -2,6 +2,43 @@
 
 All source details must be rechecked at acquisition time. Web pages and schemas can change. Record the exact resource URL, retrieval timestamp, publisher metadata, licence and SHA-256 checksum for every downloaded file.
 
+## Milestone 1 verified snapshot
+
+The 25 September 2026 audit acquired and checksummed the official crash locations, aggregate
+casualty summary, August 2026 road-location/traffic file and definitions, and 2015–2025 traffic
+census workbook and field descriptions. It also captured complete object-ID-batched Roads and
+Tracks extracts for representative Brisbane and Rockhampton windows. Exact URLs, resource IDs and
+publisher modification timestamps are versioned in `configs/milestone1_sources.yaml`; hashes and
+findings are in `reports/milestone_1_source_inventory.md`.
+
+Verified decisions:
+
+- finalized crash labels stop at 30 June 2024 because the source marks the latest 12 months
+  preliminary;
+- `Crash_Ref_Number` is unique and complete in the crash-location file;
+- the casualty-summary resource is aggregate and has no event key;
+- `segment_id` is the recommended versioned base geometry key, with an explicit intersection
+  allocation bridge;
+- the primary population is state-controlled roads with verified traffic exposure;
+- all-road exposure coverage is insufficient for an equivalent statewide headline claim.
+
+## Milestone 2 verified build snapshot
+
+On 26 September 2026 the panel build queried the official
+[Queensland Roads and Tracks](https://www.data.qld.gov.au/dataset/queensland-roads-and-tracks)
+ArcGIS layer by complete object-ID inventory and immutable 500-ID response pages. The service
+reported 48,759 state-controlled (`scr_indicator = T`) objects, all of which were canonicalised.
+Raw page paths, query URLs, retrieval timestamps, byte sizes and SHA-256 checksums are retained in
+the ignored generated road-source inventory.
+
+The build reused the checksummed Milestone 1 crash locations, August 2026 road-location/traffic
+file, and 2015–2025 annual traffic workbook. It uses only `BOTH DIRECTIONS` AADT observations and
+assigns them to segments by verified road-section and through-distance overlap. The resulting
+coverage and limitations are published in `reports/milestone_2_data_quality.md`.
+
+The network is a current snapshot used retrospectively. It is not evidence that every segment,
+alignment or road attribute existed unchanged in earlier panel periods.
+
 ## 1. Queensland crash data — required
 
 Publisher: Queensland Department of Transport and Main Roads.
@@ -61,7 +98,9 @@ Expected use:
 - road class, speed and design attributes;
 - linkage to traffic counts.
 
-Decision required in Milestone 1: whether official geometry is sufficiently complete and stable for the statewide analytical unit. OpenStreetMap may supplement topology but must not silently replace authoritative attributes.
+Milestone 2 confirmed the official Roads and Tracks `segment_id` as the unique statewide base key
+for the state-controlled panel. OpenStreetMap may supplement topology later but must not silently
+replace authoritative attributes.
 
 ## 3. Traffic exposure — required for the primary claim
 
@@ -85,6 +124,11 @@ Main risk: exposure coverage may be much stronger on state-controlled roads than
 1. restrict the primary study population;
 2. create a separately evaluated exposure-imputation model; or
 3. report tiered results with explicit abstention.
+
+Milestone 1 observed that risk directly: state-controlled length coverage exceeded 96% in both
+representative windows, while all-road length coverage was below 15%. Option 1 is therefore the
+primary design and option 3 remains the reporting rule for other roads. Exposure imputation is not
+enabled.
 
 ## 4. OpenStreetMap — candidate topology supplement
 

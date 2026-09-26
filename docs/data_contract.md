@@ -1,114 +1,127 @@
 # Canonical Data Contract
 
-This file defines the intended analytical entities. Field names are provisional until Milestone 1 verifies the actual source schemas.
+This contract records the verified Milestone 2 analytical entities for network version
+`qrt_state_controlled_2026_09_26`. Canonical analytical tables use Parquet/GeoParquet and retain
+source and availability metadata. Raw publisher files remain byte-identical outside Git.
 
 ## `road_segment`
 
-One record per versioned physical segment.
+One row per current official Queensland state-controlled segment, stored in EPSG:9473.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `segment_id` | string | Stable project identifier |
-| `network_version` | string | Geometry/version provenance |
-| `geometry` | LineString | Projected or stored with explicit CRS |
-| `length_m` | float | Segment length in metres |
-| `road_name` | string/null | Normalised display name |
-| `road_class` | category/null | Verified road hierarchy |
-| `speed_limit_kmh` | float/null | Value valid for the feature period where possible |
-| `source_ids` | map | Original official/OSM identifiers |
-| `valid_from` | date/null | Geometry/attribute validity start |
-| `valid_to` | date/null | Geometry/attribute validity end |
-| `geometry_quality` | category | verified, supplemented, uncertain |
+| `segment_id` | string | Unique official segment identifier and project key |
+| `network_version` | string | Versioned network snapshot |
+| `source_object_id` | integer | Queensland service object ID |
+| `road_id` | string/null | Official road identifier |
+| `road_name` | string/null | Official display name |
+| `road_class` | string/null | Official road class |
+| `length_m` | float | Projected segment length |
+| `lga_name_left`, `lga_name_right` | string/null | Official side-specific LGA attributes |
+| `graph_degree` | integer | Number of endpoint-adjacent segments |
+| `component_id` | string | Connected-component identifier |
+| `geometry_quality` | string | Current geometry quality status |
+| `geometry_history_status` | string | `retrospective_current_snapshot` |
+| `geometry` | LineString/MultiLineString | EPSG:9473 geometry |
+
+`segment_id` is non-null and unique. Current attributes must not be asserted as historical facts.
+
+## Road graph
+
+`road_node` stores one endpoint cluster produced with a 1 m projected tolerance. `road_adjacency`
+stores one undirected pair `(segment_id_a, segment_id_b)` sharing a clustered endpoint. Graph
+construction uses road topology only and never uses crash outcomes.
 
 ## `crash_event`
 
-One record per unique reported crash, not one row per casualty or vehicle.
+One row per reported crash, not per casualty, vehicle or driver.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `crash_id` | string | Stable source-derived identifier |
-| `occurred_at` | datetime/date | Verified event time resolution |
-| `severity` | category | Canonically mapped severity |
-| `geometry` | Point | Original coordinate with CRS metadata |
-| `segment_id` | string/null | Best matched segment |
-| `match_distance_m` | float/null | Distance to matched segment |
-| `match_confidence` | float/null | Documented confidence score |
-| `match_status` | category | matched, ambiguous, unmatched, invalid |
-| `source_release` | string | Source snapshot containing the record |
-| `available_at` | datetime | Earliest safe feature/label availability |
-| `is_provisional` | bool | Publisher or project reporting-lag status |
+| `event_id` | string | Unique source-derived crash identifier |
+| `occurred_month` | month timestamp | Verified source time resolution |
+| `severity` | string | Canonical crash severity |
+| `is_serious` | bool | Fatal or hospitalisation severity |
+| `available_at` | timestamp | End of occurrence month plus 12 months |
+| `is_provisional` | bool | Outside the finalized label cutoff |
+| `match_status` | string | `matched`, `ambiguous`, `unmatched`, or `invalid` |
+| `selected_segment_id` | string/null | Best segment where one can be selected |
+| `selected_distance_m` | float/null | Zone-appropriate projected distance |
+| `candidate_count` | integer | Retained candidates inside the rule |
+| `abs_remoteness` | string/null | Publisher remoteness category |
+| `source_release` | string | Source snapshot identifier |
+| `geometry` | Point | Original GDA2020 point |
 
-Separate child tables should hold casualties, vehicles, drivers and contributing factors to prevent accidental multiplication of crashes during joins.
+`crash_match_candidate` retains every scored candidate. `event_segment_bridge` stores each retained
+event/segment allocation and guarantees that `allocation_weight` sums to one for every bridge event.
+Unmatched and invalid events remain in `crash_event` and never silently disappear.
 
 ## `traffic_observation`
 
+One annual, non-directional `BOTH DIRECTIONS` AADT observation.
+
 | Field | Type | Meaning |
 |---|---|---|
-| `count_site_id` | string | Source count location |
-| `segment_id` | string/null | Matched road segment |
-| `period_start` | date | Observation/reference period |
-| `period_end` | date | Observation/reference period |
+| `observation_id` | string | Unique deterministic canonical key |
+| `traffic_year` | integer | AADT reference calendar year |
+| `collection_year` | integer/null | Publisher collection year where present |
+| `road_section_id` | string | Official road section identifier |
+| `count_site_id` | string | Official traffic site identifier |
+| `segment_start_through_distance_km` | float | Observation interval start |
+| `segment_end_through_distance_km` | float | Observation interval end |
 | `aadt` | float/null | Annual average daily traffic |
-| `heavy_vehicle_share` | float/null | If available |
-| `quality_flag` | category/null | Source or derived quality |
-| `available_at` | datetime | Point-in-time availability |
+| `quality_flag` | string | Publisher/derived validity category |
+| `available_at` | timestamp | 31 May after the traffic year |
+| `district_name`, `region_name`, `lga_name` | string/null | Publisher geography attributes |
+| `source_release` | string | Workbook snapshot identifier |
+
+`road_traffic_crosswalk` connects a current segment to its dominant road section/carriageway using
+the dense current TMR road-location points. A verified crosswalk requires dominant point share at
+least 0.8, mean point-to-road distance at most 20 m, and maximum distance at most 50 m.
+
+`segment_traffic_year` contains at most one deterministic observation per `(segment_id,
+traffic_year)`, selected using section identity and through-distance overlap. No exposure is imputed.
 
 ## `segment_period`
 
-One row per road segment and prediction cutoff.
+One row per `(segment_id, cutoff_date)`. The detailed field and usage contract is published in
+`reports/milestone_2_panel_contract.md`.
 
-Required keys and controls:
+Required controls:
 
-- `segment_id`;
-- `cutoff_date`;
-- `forecast_start`;
-- `forecast_end`;
-- `eligibility_status`;
-- `exposure_value`;
-- `exposure_quality_tier`;
-- `feature_max_available_at`;
-- `label_is_complete`.
+- `forecast_start > cutoff_date` and `forecast_end` is the next quarter end;
+- `feature_max_available_at <= cutoff_date` wherever a feature timestamp is present;
+- `label_is_complete == true` for every retained row;
+- `eligible_for_primary` requires positive measured AADT and a verified crosswalk;
+- crash-history feature names state their 4-, 8-, or 20-quarter lookback;
+- the primary label is `serious_crash_weight_next_1q`;
+- ambiguous label allocations remain separately visible;
+- current geometry is marked `retrospective_current_snapshot`.
 
-Feature columns must include a documented lookback window. Examples:
+## Leakage and reconciliation invariants
 
-- `crash_count_lag_1q`;
-- `serious_crash_count_lag_4q`;
-- `neighbour_crash_rate_lag_4q`;
-- `days_since_last_serious_crash`;
-- `aadt_asof_cutoff`;
-- `rain_days_lag_1q`.
-
-Target examples:
-
-- `serious_crash_next_1q`;
-- `casualty_crash_count_next_1q`;
-- `max_severity_next_1q`.
-
-## Leakage invariants
-
-Automated tests must verify:
+Automated build gates verify:
 
 ```text
+unique non-null segment, event, traffic, segment-year and segment-cutoff keys
 feature_max_available_at <= cutoff_date
 forecast_start > cutoff_date
-all target events occur within [forecast_start, forecast_end]
-provisional labels are excluded from final evaluation
-calibration and test periods do not overlap training
-geographic holdout segments do not appear in geographic-transfer training
+forecast_end <= label_complete_through
+provisional events excluded from labels
+event-to-segment allocation weights sum to one
+quarterly panel label weight equals the number of matchable serious events
 ```
 
-## Map-matching contract
+Milestone 3 additionally must ensure chronological training/test separation and complete geographic
+holdout separation. Random row splitting remains prohibited for headline results.
 
-The map matcher must retain all candidates considered within the search radius during audit runs. The final matched record must store:
+## `baseline_prediction`
 
-- original crash point;
-- selected segment;
-- perpendicular distance;
-- road-name agreement where available;
-- heading agreement if derivable;
-- intersection proximity;
-- number and scores of competing candidates;
-- matching algorithm/version.
+Milestone 3 produces one record per `(fold_id, model_name, segment_id, cutoff_date)` for test rows.
+Required fields include raw and calibrated expected weight, Poisson-derived occurrence probability,
+interval bounds and method, rank, observed future weight, subgroup fields and fold kind. Predictions
+must be finite and non-negative; interval bounds must be finite, ordered and non-negative.
 
-Never silently discard unmatched records. Report them by year, region, severity and likely reason.
-
+Trained estimators are not committed. Reproducibility comes from the versioned protocol,
+dependencies, fold manifest, deterministic seed, checksummed panel and checksummed prediction and
+metric artifacts.

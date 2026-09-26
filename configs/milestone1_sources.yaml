@@ -1,0 +1,77 @@
+source_list_version: 1
+snapshot_date: 2026-09-25
+resources:
+  - source_id: qld_crash_locations
+    publisher: Queensland Department of Transport and Main Roads
+    landing_page: https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads
+    package_id: f3e0ca94-2d7b-44ee-abef-d6b06e9b0729
+    resource_id: e88943c0-5968-4972-a15f-38e120d72ec0
+    resource_url: https://www.data.qld.gov.au/dataset/f3e0ca94-2d7b-44ee-abef-d6b06e9b0729/resource/e88943c0-5968-4972-a15f-38e120d72ec0/download/_1_crash_locations.csv
+    source_modified_at: 2026-04-24T02:56:42.272452Z
+    licence: Creative Commons Attribution 4.0
+    local_subdirectory: qld_crashes
+    filename: _1_crash_locations.csv
+
+  - source_id: qld_crash_casualty_summary
+    publisher: Queensland Department of Transport and Main Roads
+    landing_page: https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads
+    package_id: f3e0ca94-2d7b-44ee-abef-d6b06e9b0729
+    resource_id: 3fc53539-d529-4c1d-85f8-6c92d9e06fc8
+    resource_url: https://www.data.qld.gov.au/dataset/f3e0ca94-2d7b-44ee-abef-d6b06e9b0729/resource/3fc53539-d529-4c1d-85f8-6c92d9e06fc8/download/_a_road_casualties.csv
+    source_modified_at: 2026-04-24T02:58:15.869355Z
+    licence: Creative Commons Attribution 4.0
+    local_subdirectory: qld_crashes
+    filename: _a_road_casualties.csv
+
+  - source_id: qld_road_location_traffic
+    publisher: Queensland Department of Transport and Main Roads
+    landing_page: https://www.data.qld.gov.au/dataset/road-location-and-traffic-data
+    package_id: 1c1d8224-0a5e-4a0c-ad6f-025096d206ba
+    resource_id: daab3617-077f-450a-a1c0-57c26d8ba47c
+    resource_url: https://www.data.qld.gov.au/dataset/1c1d8224-0a5e-4a0c-ad6f-025096d206ba/resource/daab3617-077f-450a-a1c0-57c26d8ba47c/download/road-location-and-traffic-data_20260817.csv
+    source_modified_at: 2026-08-20T01:53:50.883475Z
+    licence: Creative Commons Attribution 4.0
+    local_subdirectory: qld_traffic
+    filename: road-location-and-traffic-data_20260817.csv
+
+  - source_id: qld_road_location_traffic_definitions
+    publisher: Queensland Department of Transport and Main Roads
+    landing_page: https://www.data.qld.gov.au/dataset/road-location-and-traffic-data
+    package_id: 1c1d8224-0a5e-4a0c-ad6f-025096d206ba
+    resource_id: 4e6e8eb4-0362-41e0-8916-194b42063a51
+    resource_url: https://www.data.qld.gov.au/dataset/1c1d8224-0a5e-4a0c-ad6f-025096d206ba/resource/4e6e8eb4-0362-41e0-8916-194b42063a51/download/roadlocationtrafficdata_definitions.pdf
+    source_modified_at: 2022-02-16T09:05:49.904983Z
+    licence: Creative Commons Attribution 4.0
+    local_subdirectory: qld_traffic
+    filename: roadlocationtrafficdata_definitions.pdf
+
+  - source_id: qld_traffic_census_field_descriptions
+    publisher: Queensland Department of Transport and Main Roads
+    landing_page: https://www.data.qld.gov.au/dataset/traffic-census-for-the-queensland-state-declared-road-network
+    package_id: 5d74e022-a302-4f40-a594-f1840c92f671
+    resource_id: f31b3c70-9f08-42bc-bfee-de6f782b9753
+    resource_url: https://www.data.qld.gov.au/dataset/5d74e022-a302-4f40-a594-f1840c92f671/resource/f31b3c70-9f08-42bc-bfee-de6f782b9753/download/aadt_2012_2021_column_description.csv
+    source_modified_at: 2026-08-06T02:26:19.893668Z
+    licence: Creative Commons Attribution 4.0
+    local_subdirectory: qld_traffic_census
+    filename: aadt_2012_2021_column_description.csv
+
+  - source_id: qld_traffic_census_2015_2025
+    publisher: Queensland Department of Transport and Main Roads
+    landing_page: https://www.data.qld.gov.au/dataset/traffic-census-for-the-queensland-state-declared-road-network
+    package_id: 5d74e022-a302-4f40-a594-f1840c92f671
+    resource_id: b856deab-ab20-48f1-85c6-2715e3a1d42c
+    resource_url: https://www.data.qld.gov.au/dataset/5d74e022-a302-4f40-a594-f1840c92f671/resource/b856deab-ab20-48f1-85c6-2715e3a1d42c/download/aadt_2015_2025.xlsx
+    source_modified_at: 2026-08-06T02:26:19.902689Z
+    licence: Creative Commons Attribution 4.0
+    local_subdirectory: qld_traffic_census
+    filename: aadt_2015_2025.xlsx
+
+services:
+  - source_id: qld_roads_and_tracks_rest
+    publisher: Queensland Department of Natural Resources and Mines, Manufacturing and Regional and Rural Development
+    landing_page: https://www.data.qld.gov.au/dataset/queensland-roads-and-tracks
+    resource_id: 8b3f0c26-199a-47b0-aee7-9b9feae675be
+    service_url: https://spatial-gis.information.qld.gov.au/arcgis/rest/services/Transportation/RoadsAndTracks/MapServer
+    layer_id: 10
+    licence: Creative Commons Attribution 4.0
