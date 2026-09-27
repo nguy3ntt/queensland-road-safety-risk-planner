@@ -108,3 +108,19 @@ def test_robustness_candidates_cannot_change_silently(tmp_path: Path) -> None:
 
     with pytest.raises(ConfigError, match="three approved finalists"):
         load_config(_write_config(tmp_path, values))
+
+
+def test_serving_cannot_use_a_different_fold(tmp_path: Path) -> None:
+    values = _base_values()
+    values["serving"]["source_fold"] = "geographic_01"
+
+    with pytest.raises(ConfigError, match="final statewide rolling fold"):
+        load_config(_write_config(tmp_path, values))
+
+
+def test_serving_budget_must_be_bounded(tmp_path: Path) -> None:
+    values = _base_values()
+    values["serving"]["default_budget"] = values["serving"]["maximum_budget"] + 1
+
+    with pytest.raises(ConfigError, match="default_budget"):
+        load_config(_write_config(tmp_path, values))

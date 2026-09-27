@@ -190,14 +190,19 @@ explicit supported interpreter:
 
 ## Where to begin
 
-The next approved scope is **Milestone 6: decision API and map application**. It must expose the
-selected demonstration model without hiding uncertainty, abstentions, provenance, or data-quality
-limitations. See
+The next approved scope is **Milestone 7: production hardening and showcase**. See
 [docs/milestones.md](docs/milestones.md).
 
 ## Current status
 
-Milestones 0 through 5 are complete. Milestone 5 calibrated and stress-tested empirical Bayes, the
+Milestones 0 through 6 are complete. Milestone 6 adds a local, read-only API and interactive map
+over the approved historical held-out scores. It publishes 170,220 segment-period scores across
+four forecast cutoffs (42,555 segments per cutoff), a precomputed multi-resolution map layer,
+budgeted investigation shortlists, segment-level quality and uncertainty views, and GeoJSON or
+GeoParquet exports. The last forecast quarter is April–June 2024, so this is **not a live risk
+service**. The displayed geometry is a retrospective 2026 network snapshot.
+
+Milestone 5 calibrated and stress-tested empirical Bayes, the
 ordinary boosted tree and the graph-feature tree over three rolling origins and four geographic
 holdouts. The ordinary boosted tree is the final demonstration candidate: it captures 8.108% of
 serious-crash weight at the rolling top-1% budget and 7.547% across geographic holdouts. The graph
@@ -213,6 +218,19 @@ To verify the retained Milestone 5 evidence quickly:
 ```powershell
 .\scripts\smoke_milestone5.ps1
 ```
+
+To rebuild and verify the Milestone 6 local serving snapshot, then open the decision app:
+
+    .venv\Scripts\python.exe -m qld_road_safety.cli build-milestone6 --project-root .
+    .\scripts\smoke_milestone6.ps1
+    .\scripts\serve_milestone6.ps1
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Keep the server on loopback. Select the
+April–June 2024 forecast, change the investigation budget, open a shortlist segment, inspect its
+interval and exposure tier, then export GeoJSON or GeoParquet. The interface never uses future
+observed outcomes or estimates treatment benefits. The API starts only when local artifact
+checksums match; it does not fit models on requests. Local reports and generated data remain
+excluded from Git.
 
 Milestone reports and figures are local review evidence and are ignored by Git. Public repository
 documentation records only verified aggregate decisions and limitations.

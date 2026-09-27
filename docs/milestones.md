@@ -131,6 +131,9 @@ Acceptance criteria:
 
 ## Milestone 6 — Decision API and map application
 
+**Status:** Complete as a local historical demonstration. The saved serving scores reconcile
+exactly with the selected Milestone 5 statewide rolling fold. This is not a live deployment.
+
 Deliverables:
 
 - batch scoring pipeline;

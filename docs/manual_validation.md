@@ -169,3 +169,23 @@ local response is absent, and regenerates ignored files under `reports/generated
 local PNG diagnostics. Because the spatial service is live, a later rebuild may legitimately
 differ from the 25 September 2026 snapshot; create a new source snapshot rather than overwriting
 old raw bytes when that happens.
+
+## Quick Milestone 6 app check
+
+After the approved Milestone 5 predictions exist locally:
+
+    .venv\Scripts\python.exe -m qld_road_safety.cli build-milestone6 --project-root .
+    .\scripts\smoke_milestone6.ps1
+    .\scripts\serve_milestone6.ps1
+
+Open http://127.0.0.1:8000 on the same computer. The smoke check should report passed for
+all three artifact checksums, exact score identity, outcome exclusion and run version. In the
+app, choose the April–June 2024 forecast, set a budget of 5 and update. Five eligible rows
+should appear; the coverage count should report 95 withheld segments statewide. Open the
+first row and confirm its expected weight, interval, exposure tier and quality details are
+visible. Zoom the map to see individual segments, then download both formats. The map may
+report that a broad view is truncated; zoom in rather than treating the subset as complete.
+
+The warning must continue to say that the view is historical and non-causal. Tab through
+the controls and shortlist, and use arrow and plus/minus keys on the focused map. These are
+manual usability checks, not scientific validation of newly refreshed forecasts.

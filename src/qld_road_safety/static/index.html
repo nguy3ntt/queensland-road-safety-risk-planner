@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Queensland road-safety investigation planner</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header class="masthead">
+    <div><p class="eyebrow">Analyst decision support · Historical demonstration</p>
+      <h1>Queensland road-safety investigation planner</h1>
+      <p>Explore evaluated future-quarter forecasts and choose locations for human investigation.</p>
+    </div>
+  </header>
+  <main id="main">
+    <div class="warning" role="note"><strong>Not live safety advice.</strong> These are historical held-out forecasts on a retrospective road snapshot. Scores are associations, not treatment effects or estimates of crashes prevented.</div>
+    <section class="controls" aria-labelledby="controls-title">
+      <h2 id="controls-title">Investigation controls</h2>
+      <div class="control-grid">
+        <label>Forecast period <select id="cutoff"></select></label>
+        <label>Traffic region <select id="region"><option value="">All regions</option></select></label>
+        <label>Road class <select id="road-class"><option value="">All classes</option></select></label>
+        <label>Investigation budget (segments) <input id="budget" type="number" min="1" step="1" value="100"></label>
+      </div>
+      <p id="period-note"></p>
+      <div class="actions">
+        <button id="apply" type="button">Update view</button>
+        <a id="geojson" href="#" download>Export selected GeoJSON</a>
+        <a id="geoparquet" href="#" download>Export selected GeoParquet</a>
+      </div>
+    </section>
+    <div id="status" class="status" role="status" aria-live="polite">Loading saved scores…</div>
+    <section class="layout">
+      <div class="panel">
+        <div class="section-heading"><h2>Map overview</h2><div><button id="zoom-in" type="button" aria-label="Zoom in">+</button> <button id="zoom-out" type="button" aria-label="Zoom out">−</button> <button id="reset-map" type="button">Reset map</button></div></div>
+        <p>Colour shows mean predicted serious-crash weight in precomputed cells. Zoom in to inspect individual road segments; a bounded sample is shown for busy views.</p>
+        <canvas id="map" width="900" height="650" tabindex="0" role="img" aria-label="Interactive Queensland road risk map. Use arrow keys to pan and plus or minus to zoom."></canvas>
+        <p id="map-status" role="status" aria-live="polite"></p>
+        <p class="legend"><span class="swatch low"></span> Lower expected weight <span class="swatch high"></span> Higher expected weight <span class="swatch withheld"></span> Withheld by uncertainty rule</p>
+      </div>
+      <div class="panel">
+        <h2>Budgeted shortlist</h2>
+        <p id="ranking-summary"></p>
+        <div class="table-wrap"><table><caption class="sr-only">Segments ranked for investigation</caption><thead><tr><th scope="col">Rank</th><th scope="col">Road / segment</th><th scope="col">Expected weight</th><th scope="col">Interval</th><th scope="col">Exposure tier</th></tr></thead><tbody id="rankings"></tbody></table></div>
+      </div>
+    </section>
+    <section class="panel details" aria-labelledby="detail-title">
+      <h2 id="detail-title" tabindex="-1">Segment detail and data quality</h2>
+      <div id="detail" aria-live="polite"><p>Choose a segment from the shortlist or map.</p></div>
+    </section>
+    <section class="panel">
+      <h2>How to read this view</h2>
+      <p>Expected weight is the model's forecast of future serious-crash burden for one quarter. The interval shows uncertainty. Abstained segments are withheld from the shortlist but remain visible in coverage counts and the map. The ranking is for investigation, not an instruction to treat a road.</p>
+      <p id="provenance"></p>
+      <ul id="limitations"></ul>
+    </section>
+  </main>
+  <footer>Queensland Road Safety Risk Planner · research demonstration</footer>
+</body>
+</html>

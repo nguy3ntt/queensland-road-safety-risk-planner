@@ -35,6 +35,7 @@ _REQUIRED_SECTIONS = {
     "baselines",
     "graph_models",
     "robustness",
+    "serving",
     "guardrails",
 }
 
@@ -445,5 +446,38 @@ def load_config(path: str | Path) -> ProjectConfig:
             raise ConfigError(f"robustness.{field} must be between zero and one")
     if robustness["selection_budget_fraction"] != baselines["selection_budget_fraction"]:
         raise ConfigError("Milestone 5 selection budget must match the baseline protocol")
+
+    serving = sections["serving"]
+    if not isinstance(serving.get("run_version"), str) or not serving["run_version"].strip():
+        raise ConfigError("serving.run_version must be a non-empty string")
+    if serving.get("source_fold") != "rolling_03":
+        raise ConfigError("serving.source_fold must remain the final statewide rolling fold")
+    if (
+        _require_date(serving.get("latest_cutoff_date"), "serving.latest_cutoff_date")
+        != last_cutoff
+    ):
+        raise ConfigError("serving.latest_cutoff_date must match panel.last_cutoff_date")
+    for field in (
+        "default_budget",
+        "maximum_budget",
+        "maximum_map_features",
+        "maximum_export_rows",
+    ):
+        value = serving.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise ConfigError(f"serving.{field} must be a positive integer")
+    if serving["default_budget"] > serving["maximum_budget"]:
+        raise ConfigError("serving.default_budget must not exceed maximum_budget")
+    grid_sizes = serving.get("grid_sizes_degrees")
+    if (
+        not isinstance(grid_sizes, list)
+        or len(grid_sizes) != 3
+        or any(
+            isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0
+            for value in grid_sizes
+        )
+        or sorted(grid_sizes, reverse=True) != grid_sizes
+    ):
+        raise ConfigError("serving.grid_sizes_degrees must be three descending positive numbers")
 
     return ProjectConfig(source_path=source_path.resolve(), values=loaded)

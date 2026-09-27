@@ -105,10 +105,11 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
 - **State:** Accepted
 - **Decision:** Local agent instructions, private work logs, local notes, scratch exports, secrets,
   raw data, trained weights, caches and generated heavy artifacts are excluded by `.gitignore`.
-  Scientific decisions, limitations, source inventories and reviewable milestone reports remain
-  public project evidence.
-- **Reason:** Operational prompting and private working notes do not need publication, while choices
-  that affect scientific interpretation must remain auditable.
+  Scientific decisions, limitations and source inventories remain public project evidence.
+  Milestone reports and generated figures remain local review evidence for past and future
+  milestones, per the repository owner's later privacy instruction.
+- **Reason:** Operational prompting and local evidence do not need publication, while choices
+  that affect scientific interpretation must remain auditable in public documentation.
 
 ## M2-D011 — Network version and topology
 
@@ -242,3 +243,16 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
   at 8.198% but has a lower 7.099% geographic mean and greater complexity.
 - **Consequence:** Milestone 6 may serve only this calibrated demonstration candidate and must expose
   uncertainty, abstention reasons and provenance. This is not production or causal approval.
+
+## M6-D023 — Retrospective, read-only serving boundary
+
+- **State:** Accepted at Milestone 6
+- **Decision:** Publish only the selected Milestone 5 boosted-tree scores from statewide rolling
+  fold 03 as a checksum-verified local batch snapshot. Exclude future observed outcomes from all
+  serving data. Provide analyst-facing uncertainty, abstention and data-quality views and label
+  the interface as a historical demonstration, not live or causal guidance.
+- **Evidence:** The serving snapshot reconciles exactly to 170,220 selected held-out predictions
+  over four cutoffs and contains 42,555 segments per cutoff. The latest forecast period is
+  1 April–30 June 2024. Map cells are precomputed at three resolutions.
+- **Consequence:** A future-period refresh requires a new approved and audited score snapshot;
+  the API does not infer or retrain during a request.

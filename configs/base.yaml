@@ -149,6 +149,19 @@ robustness:
   selection_maximum_coverage_error: 0.05
   drift_psi_warning_threshold: 0.20
 
+serving:
+  run_version: decision_app_v1_2026_09_28
+  source_fold: rolling_03
+  latest_cutoff_date: 2024-03-31
+  default_budget: 100
+  maximum_budget: 1000
+  maximum_map_features: 500
+  maximum_export_rows: 5000
+  grid_sizes_degrees:
+    - 0.5
+    - 0.2
+    - 0.05
+
 guardrails:
   causal_claims_allowed: false
   intervention_recommendations_allowed: false

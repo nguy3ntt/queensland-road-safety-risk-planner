@@ -87,6 +87,23 @@ def build_parser() -> argparse.ArgumentParser:
         help="verify saved Milestone 5 robustness evidence and acceptance gates",
     )
     smoke_milestone5.add_argument("--project-root", default=".")
+
+    build_milestone6 = subparsers.add_parser(
+        "build-milestone6", help="publish approved historical scores and precomputed map layers"
+    )
+    build_milestone6.add_argument("--project-root", default=".")
+
+    smoke_milestone6 = subparsers.add_parser(
+        "smoke-milestone6", help="verify serving checksums and exact evaluation-score identity"
+    )
+    smoke_milestone6.add_argument("--project-root", default=".")
+
+    serve_milestone6 = subparsers.add_parser(
+        "serve-milestone6", help="serve the local historical decision demonstration"
+    )
+    serve_milestone6.add_argument("--project-root", default=".")
+    serve_milestone6.add_argument("--host", default="127.0.0.1")
+    serve_milestone6.add_argument("--port", type=int, default=8000)
     return parser
 
 
@@ -284,6 +301,46 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 2
         print(json.dumps(result, indent=2))
         return 0 if result["status"] == "passed" else 2
+
+    if args.command == "build-milestone6":
+        from qld_road_safety.milestone6 import build_milestone6
+
+        try:
+            result = build_milestone6(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(json.dumps({"status": "complete", **result}, indent=2))
+        return 0
+
+    if args.command == "smoke-milestone6":
+        from qld_road_safety.milestone6 import smoke_milestone6
+
+        try:
+            result = smoke_milestone6(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] == "passed" else 2
+
+    if args.command == "serve-milestone6":
+        import uvicorn
+
+        from qld_road_safety.api import create_app
+
+        if args.host not in {"127.0.0.1", "localhost"}:
+            print(
+                json.dumps({"status": "failed", "error": "Only local loopback serving is allowed"})
+            )
+            return 2
+        try:
+            app = create_app(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        uvicorn.run(app, host=args.host, port=args.port)
+        return 0
 
     if args.command == "acquire-milestone1":
         try:
