@@ -75,6 +75,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="verify saved Milestone 4 graph experiments and acceptance gates",
     )
     smoke_milestone4.add_argument("--project-root", default=".")
+
+    train_milestone5 = subparsers.add_parser(
+        "train-milestone5",
+        help="calibrate, stress-test and select the final demonstration model",
+    )
+    train_milestone5.add_argument("--project-root", default=".")
+
+    smoke_milestone5 = subparsers.add_parser(
+        "smoke-milestone5",
+        help="verify saved Milestone 5 robustness evidence and acceptance gates",
+    )
+    smoke_milestone5.add_argument("--project-root", default=".")
     return parser
 
 
@@ -232,6 +244,41 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         try:
             result = run_milestone4_smoke(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] == "passed" else 2
+
+    if args.command == "train-milestone5":
+        from qld_road_safety.milestone5 import run_milestone5
+
+        try:
+            result = run_milestone5(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(
+            json.dumps(
+                {
+                    "status": "complete",
+                    "run_version": result["run_version"],
+                    "selected_model": result["selected_model"],
+                    "rolling_origin_folds": result["rolling_origin_folds"],
+                    "geographic_holdout_folds": result["geographic_holdout_folds"],
+                    "deployment_status": result["deployment_status"],
+                    "gates_passed": all(check["passed"] for check in result["gates"]),
+                },
+                indent=2,
+            )
+        )
+        return 0
+
+    if args.command == "smoke-milestone5":
+        from qld_road_safety.milestone5 import run_milestone5_smoke
+
+        try:
+            result = run_milestone5_smoke(Path(args.project_root))
         except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
             print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
             return 2

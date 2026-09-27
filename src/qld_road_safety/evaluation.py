@@ -104,21 +104,21 @@ def split_fold(
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Select one fold's common eligible train, calibration and test populations."""
 
-    eligible = panel.loc[panel["eligible_for_primary"]].copy()
-    cutoff_text = pd.to_datetime(eligible["cutoff_date"]).dt.date.astype(str)
-    train_mask = cutoff_text.isin(fold.train_cutoffs)
-    calibration_mask = cutoff_text.isin(fold.calibration_cutoffs)
-    test_mask = cutoff_text.isin(fold.test_cutoffs)
+    eligible_mask = panel["eligible_for_primary"].astype(bool)
+    cutoff_text = pd.to_datetime(panel["cutoff_date"]).dt.date.astype(str)
+    train_mask = eligible_mask & cutoff_text.isin(fold.train_cutoffs)
+    calibration_mask = eligible_mask & cutoff_text.isin(fold.calibration_cutoffs)
+    test_mask = eligible_mask & cutoff_text.isin(fold.test_cutoffs)
     if fold.geographic_field is not None and fold.geographic_value is not None:
-        geography = eligible[fold.geographic_field].fillna("<missing>").astype(str)
+        geography = panel[fold.geographic_field].fillna("<missing>").astype(str)
         outside = ~geography.eq(fold.geographic_value)
         train_mask &= outside
         calibration_mask &= outside
         test_mask &= ~outside
 
-    train = eligible.loc[train_mask].copy()
-    calibration = eligible.loc[calibration_mask].copy()
-    test = eligible.loc[test_mask].copy()
+    train = panel.loc[train_mask].copy()
+    calibration = panel.loc[calibration_mask].copy()
+    test = panel.loc[test_mask].copy()
     validate_fold_frames(train, calibration, test, fold)
     return train, calibration, test
 

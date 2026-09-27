@@ -52,6 +52,9 @@ tiles/**
 # Generated reports, except documentation placeholders
 reports/generated/**
 
+# Local milestone evidence (past and future); keep only reports/README.md public
+reports/milestone_[0-9]*
+
 # Notebook outputs
 .ipynb_checkpoints/
 

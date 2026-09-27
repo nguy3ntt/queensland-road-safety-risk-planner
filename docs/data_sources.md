@@ -9,7 +9,7 @@ casualty summary, August 2026 road-location/traffic file and definitions, and 20
 census workbook and field descriptions. It also captured complete object-ID-batched Roads and
 Tracks extracts for representative Brisbane and Rockhampton windows. Exact URLs, resource IDs and
 publisher modification timestamps are versioned in `configs/milestone1_sources.yaml`; hashes and
-findings are in `reports/milestone_1_source_inventory.md`.
+findings are retained in the local Milestone 1 source inventory.
 
 Verified decisions:
 
@@ -34,7 +34,7 @@ the ignored generated road-source inventory.
 The build reused the checksummed Milestone 1 crash locations, August 2026 road-location/traffic
 file, and 2015–2025 annual traffic workbook. It uses only `BOTH DIRECTIONS` AADT observations and
 assigns them to segments by verified road-section and through-distance overlap. The resulting
-coverage and limitations are published in `reports/milestone_2_data_quality.md`.
+coverage and limitations are retained in the local Milestone 2 data-quality report.
 
 The network is a current snapshot used retrospectively. It is not evidence that every segment,
 alignment or road attribute existed unchanged in earlier panel periods.

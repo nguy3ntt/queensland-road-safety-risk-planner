@@ -85,7 +85,7 @@ traffic_year)`, selected using section identity and through-distance overlap. No
 ## `segment_period`
 
 One row per `(segment_id, cutoff_date)`. The detailed field and usage contract is published in
-`reports/milestone_2_panel_contract.md`.
+the local Milestone 2 panel-contract report.
 
 Required controls:
 

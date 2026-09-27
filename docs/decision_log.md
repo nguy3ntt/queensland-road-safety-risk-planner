@@ -218,3 +218,27 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
   0.483, and its fits reach the bounded 30-epoch cap.
 - **Consequence:** Retain the implementation and negative result for audit, but do not add neural
   complexity to Milestone 5 unless new evidence or a separately approved experiment justifies it.
+
+## M5-D021 — Corroborated abstention policy
+
+- **State:** Accepted with prospective-validation qualification at Milestone 5
+- **Decision:** Keep single OOD, disagreement and interval-width signals as diagnostics. Abstain for
+  epistemic uncertainty only when OOD is corroborated by high disagreement or interval width.
+  Continue to abstain directly for stale exposure, unseen categories or unsupported interval groups.
+- **Evidence:** Single-signal OOD exclusion reduced rolling top-1% stability below the predeclared
+  0.70 gate despite underlying unfiltered model stability of 0.77–0.79. The outcome-free
+  corroborated rule yields 0.748–0.770 stability and about 0.2% row abstention.
+- **Consequence:** The rule is suitable for the demonstration but was refined during robustness
+  work. Confirm it on newly available future quarters before any operational deployment claim.
+
+## M5-D022 — Final demonstration model
+
+- **State:** Accepted at Milestone 5
+- **Decision:** Select the ordinary boosted tree. Retain empirical Bayes and the graph-feature tree
+  as audited comparators, not serving defaults.
+- **Evidence:** The ordinary tree captures 8.108% of serious-crash weight at the rolling top-1%
+  budget and 7.547% across four geographic holdouts, with 0.762 adjacent-quarter Jaccard, 89.786%
+  retained interval coverage and 0.201% rolling abstention. The graph tree is rolling-noninferior
+  at 8.198% but has a lower 7.099% geographic mean and greater complexity.
+- **Consequence:** Milestone 6 may serve only this calibrated demonstration candidate and must expose
+  uncertainty, abstention reasons and provenance. This is not production or causal approval.

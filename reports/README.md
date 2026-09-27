@@ -1,6 +1,9 @@
 # Reports
 
-Human-reviewed reports may be stored directly in this folder. Machine-generated reports belong in `reports/generated/`, which is ignored by Git unless a later milestone deliberately promotes a small artifact for version control.
+Human-reviewed milestone reports may be stored directly in this folder for local review. All files
+matching `milestone_[0-9]*` and all machine-generated reports under `reports/generated/` are ignored
+by Git. This README is the public index; verified aggregate decisions belong in `README.md` and
+`docs/` rather than committed milestone report files.
 
 Expected reports include:
 
@@ -37,3 +40,10 @@ Completed Milestone 4 evidence:
 - `milestone_4_evaluation.md` — baseline comparison, uncertainty and ablations;
 - `milestone_4_compute_and_sensitivity.md` — cost, convergence and sensitivity;
 - `milestone_4_comparison.png` and `milestone_4_ablations.png` — review figures.
+
+Completed Milestone 5 local evidence:
+
+- `milestone_5_completion.md` — acceptance evidence and final demonstration-model decision;
+- `milestone_5_calibration_robustness.md` — calibration, drift, abstention and subgroup audit;
+- `milestone_5_model_card.md` — intended use, performance, limitations and unsupported uses;
+- `milestone_5_selection.png` and `milestone_5_calibration.png` — review figures.

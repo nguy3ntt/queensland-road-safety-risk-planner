@@ -190,26 +190,29 @@ explicit supported interpreter:
 
 ## Where to begin
 
-The next approved scope is **Milestone 5: calibration, robustness and model selection**. It must
-compare the graph-feature tree with the ordinary boosted tree and empirical Bayes, expand geographic
-and subgroup reliability checks, and define abstention before any final-model claim. See
+The next approved scope is **Milestone 6: decision API and map application**. It must expose the
+selected demonstration model without hiding uncertainty, abstentions, provenance, or data-quality
+limitations. See
 [docs/milestones.md](docs/milestones.md).
 
 ## Current status
 
-Milestones 0 through 4 are complete. Milestone 4 evaluated graph summaries and a compact
-GraphSAGE-style neural count model over the exact Milestone 3 folds. The graph-feature boosted tree
-advances to Milestone 5 because of its Brisbane transfer gain, while its rolling gain is small and
-the neural graph model does not advance. See
-[reports/milestone_4_completion.md](reports/milestone_4_completion.md).
+Milestones 0 through 5 are complete. Milestone 5 calibrated and stress-tested empirical Bayes, the
+ordinary boosted tree and the graph-feature tree over three rolling origins and four geographic
+holdouts. The ordinary boosted tree is the final demonstration candidate: it captures 8.108% of
+serious-crash weight at the rolling top-1% budget and 7.547% across geographic holdouts. The graph
+tree is rolling-noninferior but does not justify its added complexity or weaker geographic mean.
 
 The primary study population is state-controlled roads with verified exposure. A statewide
 all-road headline claim and naive nearest-segment labels are explicitly out of scope. The local
 panel contains 877,662 rows across 48,759 segments and 18 cutoffs; 764,342 rows are primary
 eligible. Baseline results are planning-support forecasts, not causal safety claims.
 
-To verify the retained Milestone 4 evidence quickly:
+To verify the retained Milestone 5 evidence quickly:
 
 ```powershell
-.\scripts\smoke_milestone4.ps1
+.\scripts\smoke_milestone5.ps1
 ```
+
+Milestone reports and figures are local review evidence and are ignored by Git. Public repository
+documentation records only verified aggregate decisions and limitations.

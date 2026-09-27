@@ -121,6 +121,34 @@ graph_models:
   promotion_max_brier_relative_degradation: 0.02
   promotion_max_interval_coverage_drop: 0.02
 
+robustness:
+  run_version: robustness_v1_2026_09_27
+  candidate_models:
+    - empirical_bayes_rate
+    - boosted_tree
+    - graph_feature_boosted_tree
+  geographic_holdout_field: lga_name_left
+  geographic_holdout_values:
+    - Brisbane City
+    - Gold Coast City
+    - Sunshine Coast Regional
+    - Townsville City
+  interval_coverage: 0.90
+  mondrian_group_column: road_class
+  minimum_group_calibration_rows: 500
+  minimum_group_positive_events: 10
+  ood_quantile: 0.99
+  disagreement_quantile: 0.99
+  interval_width_quantile: 0.995
+  maximum_aadt_age_years: 3
+  maximum_abstention_fraction: 0.10
+  selection_budget_fraction: 0.01
+  selection_noninferiority_margin: 0.0025
+  selection_minimum_stability: 0.70
+  selection_maximum_brier_relative_degradation: 0.02
+  selection_maximum_coverage_error: 0.05
+  drift_psi_warning_threshold: 0.20
+
 guardrails:
   causal_claims_allowed: false
   intervention_recommendations_allowed: false

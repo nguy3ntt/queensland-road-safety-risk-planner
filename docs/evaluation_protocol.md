@@ -126,3 +126,24 @@ An advanced model may become the product model only if it:
 - provides acceptable scoring cost and operational stability.
 
 Otherwise, deploy the simpler model and retain the advanced method as a documented research result.
+
+## Implemented Milestone 5 selection protocol
+
+Milestone 5 compares empirical Bayes, the ordinary boosted tree and the graph-feature boosted tree
+on three expanding rolling origins plus complete Brisbane, Gold Coast, Sunshine Coast and Townsville
+holdouts. All models share row fingerprints. Calibration, interval and abstention thresholds use
+training or calibration rows only.
+
+Expected counts receive multiplicative calibration. Occurrence probabilities use isotonic
+calibration. Ninety-percent split-conformal absolute-residual intervals use supported road-class
+groups and a global fallback. OOD distance, finalist disagreement and interval width remain visible.
+Hard epistemic abstention requires OOD distance corroborated by disagreement or width; stale
+exposure, unknown categories and unsupported interval groups remain direct reasons. Abstained rows
+stay in the original fixed-budget denominator.
+
+Promotion requires rolling top-1% non-inferiority within 0.25 percentage points, Brier degradation
+within 2% of the best finalist, retained interval coverage within five points of 90%, abstention no
+greater than 10%, and mean adjacent-quarter Jaccard of at least 0.70. Geographic performance and
+complexity then break ties. This selects the ordinary boosted tree. Because the corroborated
+abstention rule was refined during robustness development, its reported test performance is
+demonstration evidence and requires confirmation on new future periods before deployment.

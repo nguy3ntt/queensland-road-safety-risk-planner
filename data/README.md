@@ -78,3 +78,26 @@ data/processed/milestone4/<run_version>/
 
 Graph summaries are rebuilt within each fold split from the versioned Milestone 2 adjacency table.
 Neural and tree weights remain local and are not committed.
+
+Milestone 5 writes memory-bounded, reproducible robustness outputs to:
+
+```text
+data/processed/milestone5/<run_version>/
+├── predictions_<fold_id>.parquet
+├── final_candidate_predictions.parquet
+├── fold_metrics.parquet
+├── selective_budget_metrics.parquet
+├── calibration_curves.parquet
+├── subgroup_audit.parquet
+├── drift_metrics.parquet
+├── abstention_thresholds.parquet
+├── abstention_reasons.parquet
+├── interval_group_support.parquet
+├── calibration_diagnostics.parquet
+├── ranking_stability.parquet
+└── model_selection.parquet
+```
+
+Candidate predictions are sharded by fold to bound peak memory. The final candidate file contains
+only the selected model. All artifacts remain local, are checksummed, and are verified by the
+Milestone 5 smoke test.

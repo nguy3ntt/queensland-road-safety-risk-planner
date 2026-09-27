@@ -22,7 +22,7 @@ Acceptance criteria:
 ## Milestone 1 — Source audit and geospatial feasibility
 
 **Status:** Complete on 25 September 2026 with a conditional go for a state-controlled-road
-Milestone 2 panel. See `reports/milestone_1_completion.md`.
+Milestone 2 panel. Detailed review evidence is retained locally.
 
 Deliverables:
 
@@ -46,7 +46,7 @@ Acceptance criteria:
 ## Milestone 2 — Canonical road-segment panel
 
 **Status:** Complete on 26 September 2026 with a conditional go for Milestone 3 baselines on the
-verified-exposure state-controlled population. See `reports/milestone_2_completion.md`.
+verified-exposure state-controlled population. Detailed review evidence is retained locally.
 
 Deliverables:
 
@@ -69,7 +69,7 @@ Acceptance criteria:
 ## Milestone 3 — Statistical and operational baselines
 
 **Status:** Complete on 26 September 2026 with boosted tree selected as the chronological reference
-and empirical Bayes retained as the transfer challenger. See `reports/milestone_3_completion.md`.
+and empirical Bayes retained as the transfer challenger. Detailed review evidence is local.
 
 Deliverables:
 
@@ -89,8 +89,7 @@ Acceptance criteria:
 ## Milestone 4 — Graph and spatiotemporal modelling
 
 **Status:** Complete on 26 September 2026. The graph-feature boosted tree advances as a Milestone 5
-robustness candidate; the spatiotemporal neural candidate does not beat the retained baselines. See
-`reports/milestone_4_completion.md`.
+robustness candidate; the spatiotemporal neural candidate does not beat the retained baselines.
 
 Deliverables:
 
@@ -108,6 +107,11 @@ Acceptance criteria:
 - failure to beat baselines is reported honestly.
 
 ## Milestone 5 — Calibration, robustness and model selection
+
+**Status:** Complete on 27 September 2026. The ordinary boosted tree is selected as the final
+demonstration candidate after three rolling origins and four geographic holdouts. It passes the
+predeclared ranking, calibration, interval, abstention and stability gates. The result is not
+deployment approval; the refined corroborated abstention rule requires future-period confirmation.
 
 Deliverables:
 

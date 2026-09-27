@@ -116,6 +116,21 @@ Abstention rules may use:
 
 The UI must show why a segment was downgraded or withheld.
 
+## Implemented Milestone 5 robustness layer
+
+The final robustness layer keeps three finalists from the baseline-first sequence. It calibrates
+expected counts and occurrence probability on a held-out chronological block, fits road-class
+conditional conformal intervals when support is adequate, and otherwise uses the global calibration
+radius. Numeric covariate drift is reported with population stability index, while robust scaled
+feature distance supplies an OOD diagnostic.
+
+Selective prediction uses corroboration: a segment is withheld for epistemic uncertainty only when
+an OOD diagnostic coincides with high cross-model disagreement or an unusually wide interval.
+Stale exposure, unseen categories and unsupported interval groups are independent hard reasons.
+Every reason is preserved per segment, and abstained crash weight remains in evaluation
+denominators. Coverage, calibration, selection and abstention are audited by road class, TMR region,
+left-side LGA and segment-length band.
+
 ## Interpretation
 
 Allowed language:

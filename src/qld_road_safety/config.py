@@ -34,6 +34,7 @@ _REQUIRED_SECTIONS = {
     "evaluation",
     "baselines",
     "graph_models",
+    "robustness",
     "guardrails",
 }
 
@@ -392,5 +393,57 @@ def load_config(path: str | Path) -> ProjectConfig:
         raise ConfigError("graph_models.boosted_learning_rate must be positive")
     if graph_models["neural_learning_rate_init"] == 0:
         raise ConfigError("graph_models.neural_learning_rate_init must be positive")
+
+    robustness = sections["robustness"]
+    robustness_run_version = robustness.get("run_version")
+    if not isinstance(robustness_run_version, str) or not robustness_run_version.strip():
+        raise ConfigError("robustness.run_version must be a non-empty string")
+    candidates = robustness.get("candidate_models")
+    approved_candidates = {
+        "empirical_bayes_rate",
+        "boosted_tree",
+        "graph_feature_boosted_tree",
+    }
+    if not isinstance(candidates, list) or set(candidates) != approved_candidates:
+        raise ConfigError("robustness.candidate_models must contain the three approved finalists")
+    if robustness.get("geographic_holdout_field") != "lga_name_left":
+        raise ConfigError("robustness.geographic_holdout_field must remain lga_name_left")
+    holdout_values = robustness.get("geographic_holdout_values")
+    if (
+        not isinstance(holdout_values, list)
+        or len(holdout_values) < 2
+        or any(not isinstance(value, str) or not value.strip() for value in holdout_values)
+        or len(set(holdout_values)) != len(holdout_values)
+    ):
+        raise ConfigError("robustness.geographic_holdout_values must contain unique non-empty LGAs")
+    group_column = robustness.get("mondrian_group_column")
+    if group_column not in {"road_class", "aadt_region_name"}:
+        raise ConfigError("robustness.mondrian_group_column is not approved")
+    for field in (
+        "minimum_group_calibration_rows",
+        "minimum_group_positive_events",
+        "maximum_aadt_age_years",
+    ):
+        value = robustness.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise ConfigError(f"robustness.{field} must be a positive integer")
+    for field in (
+        "interval_coverage",
+        "ood_quantile",
+        "disagreement_quantile",
+        "interval_width_quantile",
+        "maximum_abstention_fraction",
+        "selection_budget_fraction",
+        "selection_noninferiority_margin",
+        "selection_minimum_stability",
+        "selection_maximum_brier_relative_degradation",
+        "selection_maximum_coverage_error",
+        "drift_psi_warning_threshold",
+    ):
+        value = robustness.get(field)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 < value < 1:
+            raise ConfigError(f"robustness.{field} must be between zero and one")
+    if robustness["selection_budget_fraction"] != baselines["selection_budget_fraction"]:
+        raise ConfigError("Milestone 5 selection budget must match the baseline protocol")
 
     return ProjectConfig(source_path=source_path.resolve(), values=loaded)

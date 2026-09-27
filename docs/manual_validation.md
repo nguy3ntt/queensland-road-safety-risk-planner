@@ -39,7 +39,7 @@ From the repository root, after the Milestone 2 build artifacts have been retain
 
 Expected result: a JSON document with `"status": "passed"` and every check marked
 `"passed": true`. It verifies the 11 scientific gates again, recomputes SHA-256 for every saved
-Parquet artifact, confirms the configured network version and checks that all four public reports
+Parquet artifact, confirms the configured network version and checks that all four local reports
 and two diagnostic figures are present. It does not download data or train a model.
 
 For a quick human inspection of the saved panel:
@@ -69,7 +69,7 @@ After the local baseline artifacts have been retained:
 ```
 
 Expected result: `"status": "passed"` with every check passing. The command verifies all nine
-scientific gates, exact Parquet checksums, the configured run version, and the four public reports
+scientific gates, exact Parquet checksums, the configured run version, and the four local reports
 plus two diagnostic figures. It does not retrain models.
 
 For a quick human-readable check of the selected model and top-1% results:
@@ -88,7 +88,7 @@ Expected selected model: `boosted_tree`. Expected printed capture values are app
 ```
 
 This fits four models across three rolling origins and one Brisbane transfer fold. It rewrites only
-ignored generated/model-output artifacts and the two public figures. On the current local machine it
+ignored generated/model-output artifacts and the two local figures. On the current local machine it
 typically completes in roughly one to two minutes; timing varies by CPU and storage.
 
 ## Quick Milestone 4 smoke test
@@ -100,7 +100,7 @@ After the local graph-model artifacts have been retained:
 ```
 
 Expected result: `"status": "passed"` with every check passing. The command validates all ten
-scientific gates, exact Parquet checksums, the configured run version, and the four public reports
+scientific gates, exact Parquet checksums, the configured run version, and the four local reports
 plus two figures. It does not retrain a model.
 
 For a quick human-readable result check:
@@ -119,9 +119,42 @@ are approximately 8.48/7.48, 8.99/6.69, 9.08/8.56 and 7.71/7.28 percent.
 ```
 
 This rebuilds split-local graph features, trains five candidate/ablation variants over the saved
-folds and rewrites only ignored generated/model-output artifacts plus the two public figures. The
+folds and rewrites only ignored generated/model-output artifacts plus the two local figures. The
 verified run took about 2.4 minutes on the current local CPU; runtime varies by hardware. Neural
 fits currently reach the configured epoch cap, which is disclosed in the compute report.
+
+## Quick Milestone 5 smoke test
+
+After the local robustness artifacts have been retained:
+
+```powershell
+.\scripts\smoke_milestone5.ps1
+```
+
+Expected result: `"status": "passed"` with every gate and artifact checksum passing. It verifies
+three rolling origins, four geographic holdouts, calibrated intervals, drift/OOD diagnostics,
+subgroup audits, abstention, the final model card and the configured run version. It does not
+retrain models.
+
+For a short result check:
+
+```powershell
+.venv\Scripts\python.exe -c "import json; s=json.load(open('reports/generated/milestone5/summary.json')); print(s['selected_model']); [print(x['model_name'],round(100*x['rolling_top_budget_mean'],3),round(100*x['geographic_top_budget_mean'],3)) for x in s['selection']]"
+```
+
+Expected selected model: `boosted_tree`. Expected rolling/geographic top-1% values are about
+7.343/7.294 for empirical Bayes, 8.108/7.547 for the ordinary tree and 8.198/7.099 for the graph
+tree.
+
+## Optional full Milestone 5 retraining
+
+```powershell
+.\scripts\train_milestone5.ps1
+```
+
+This rebuilds split-local graph features, calibrates all three finalists and rewrites ignored local
+artifacts and review reports. It uses quarter-batched graph messages and fold-sharded predictions
+to bound peak memory. Runtime and memory vary by machine.
 
 ## Optional full audit rebuild
 
@@ -133,6 +166,6 @@ Only run this when you intentionally want to rebuild the generated Milestone 1 e
 
 It reads the large official files, may query the live Queensland Roads and Tracks service if a
 local response is absent, and regenerates ignored files under `reports/generated/` plus the two
-public PNG diagnostics. Because the spatial service is live, a later rebuild may legitimately
+local PNG diagnostics. Because the spatial service is live, a later rebuild may legitimately
 differ from the 25 September 2026 snapshot; create a new source snapshot rather than overwriting
 old raw bytes when that happens.

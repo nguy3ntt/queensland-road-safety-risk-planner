@@ -17,6 +17,7 @@ def test_base_config_is_valid() -> None:
     assert config.values["segmentation"]["projected_crs"] == "EPSG:9473"
     assert config.values["baselines"]["test_window_periods"] == 4
     assert config.values["graph_models"]["adjacency_method"] == ("shared_endpoint_one_hop_mean")
+    assert len(config.values["robustness"]["geographic_holdout_values"]) == 4
     assert config.values["guardrails"]["causal_claims_allowed"] is False
 
 
@@ -98,4 +99,12 @@ def test_graph_adjacency_method_cannot_change_silently(tmp_path: Path) -> None:
     values["graph_models"]["adjacency_method"] = "outcome_similarity"
 
     with pytest.raises(ConfigError, match="adjacency_method"):
+        load_config(_write_config(tmp_path, values))
+
+
+def test_robustness_candidates_cannot_change_silently(tmp_path: Path) -> None:
+    values = _base_values()
+    values["robustness"]["candidate_models"] = ["graph_feature_boosted_tree"]
+
+    with pytest.raises(ConfigError, match="three approved finalists"):
         load_config(_write_config(tmp_path, values))
