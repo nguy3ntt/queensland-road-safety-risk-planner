@@ -69,6 +69,24 @@ An initial advanced architecture may contain:
 
 This architecture is provisional. Complexity should remain small enough for reproducible experiments on a consumer GPU.
 
+## Implemented Milestone 4 graph models
+
+Milestone 4 uses the saved undirected endpoint graph and derives one-hop means only from
+point-in-time-safe inputs. Nested 4/8/20-quarter crash histories are converted to disjoint recent,
+middle and older rates before message aggregation.
+
+Two candidates use identical folds and message inputs:
+
+- a deterministic Poisson LightGBM graph-feature baseline;
+- a compact one-hop mean GraphSAGE-style neural count model in which self and neighbour channels
+  receive learned first-layer weights, followed by 16/8-unit hidden layers and a log-linked Poisson
+  output.
+
+The geographic fold builds train, calibration and test messages separately and excludes boundary
+edges. Required neural ablations remove graph messages, temporal crash history and exposure in turn.
+The graph-feature tree advances to robustness testing; the neural model does not beat the retained
+baselines and is not promoted.
+
 ## Spatial leakage controls
 
 Neighbouring road segments are highly correlated. Random rows would allow almost identical locations and adjacent periods into train and test sets. Required controls include:

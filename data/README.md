@@ -59,3 +59,22 @@ data/processed/milestone3/<run_version>/
 
 Trained weights are not retained in Git. The saved predictions, fold definitions, metrics, protocol
 and version metadata are sufficient to audit and reproduce the baseline comparison.
+
+Milestone 4 writes reproducible graph-model outputs to:
+
+```text
+data/processed/milestone4/<run_version>/
+├── predictions.parquet
+├── fold_metrics.parquet
+├── budget_metrics.parquet
+├── calibration_curves.parquet
+├── subgroup_metrics.parquet
+├── ranking_stability.parquet
+├── ablation_fold_metrics.parquet
+├── ablation_budget_metrics.parquet
+├── ablation_summary.parquet
+└── paired_differences.parquet
+```
+
+Graph summaries are rebuilt within each fold split from the versioned Milestone 2 adjacency table.
+Neural and tree weights remain local and are not committed.

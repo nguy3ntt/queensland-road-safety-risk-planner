@@ -29,3 +29,11 @@ Completed Milestone 3 evidence:
 - `milestone_3_calibration_and_uncertainty.md` — reliability and interval coverage;
 - `milestone_3_model_selection.md` — strongest-baseline decision and Milestone 4 comparison rule;
 - `milestone_3_top_k.png` and `milestone_3_calibration.png` — review figures.
+
+Completed Milestone 4 evidence:
+
+- `milestone_4_completion.md` — acceptance evidence and candidate decision;
+- `milestone_4_graph_validation.md` — topology audit and leakage controls;
+- `milestone_4_evaluation.md` — baseline comparison, uncertainty and ablations;
+- `milestone_4_compute_and_sensitivity.md` — cost, convergence and sensitivity;
+- `milestone_4_comparison.png` and `milestone_4_ablations.png` — review figures.

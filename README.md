@@ -135,7 +135,9 @@ The final application should provide:
 │   ├── milestone2.py
 │   ├── baselines.py
 │   ├── evaluation.py
-│   └── milestone3.py
+│   ├── milestone3.py
+│   ├── graph_models.py
+│   └── milestone4.py
 ├── tests/
 │   ├── test_acquisition.py
 │   ├── test_config.py
@@ -145,7 +147,8 @@ The final application should provide:
 │   ├── test_canonical.py
 │   ├── test_panel.py
 │   ├── test_baselines.py
-│   └── test_evaluation.py
+│   ├── test_evaluation.py
+│   └── test_graph_models.py
 ├── .env.example
 ├── .gitignore
 └── pyproject.toml
@@ -187,26 +190,26 @@ explicit supported interpreter:
 
 ## Where to begin
 
-The next approved scope is **Milestone 4: graph and spatiotemporal modelling**. Any graph candidate
-must use the saved Milestone 3 folds and compare against both boosted tree and empirical Bayes.
-Complexity is justified only by a defensible improvement in future-period or geographic-transfer
-decision performance without materially worse calibration. See
+The next approved scope is **Milestone 5: calibration, robustness and model selection**. It must
+compare the graph-feature tree with the ordinary boosted tree and empirical Bayes, expand geographic
+and subgroup reliability checks, and define abstention before any final-model claim. See
 [docs/milestones.md](docs/milestones.md).
 
 ## Current status
 
-Milestones 0 through 3 are complete. Milestone 3 evaluated historical density, empirical Bayes,
-exposure-aware Poisson and boosted trees over three rolling origins and a fully held-out Brisbane
-transfer test. Boosted tree is the chronological reference; empirical Bayes remains the transfer
-challenger. See [reports/milestone_3_completion.md](reports/milestone_3_completion.md).
+Milestones 0 through 4 are complete. Milestone 4 evaluated graph summaries and a compact
+GraphSAGE-style neural count model over the exact Milestone 3 folds. The graph-feature boosted tree
+advances to Milestone 5 because of its Brisbane transfer gain, while its rolling gain is small and
+the neural graph model does not advance. See
+[reports/milestone_4_completion.md](reports/milestone_4_completion.md).
 
 The primary study population is state-controlled roads with verified exposure. A statewide
 all-road headline claim and naive nearest-segment labels are explicitly out of scope. The local
 panel contains 877,662 rows across 48,759 segments and 18 cutoffs; 764,342 rows are primary
 eligible. Baseline results are planning-support forecasts, not causal safety claims.
 
-To verify the retained Milestone 3 evidence quickly:
+To verify the retained Milestone 4 evidence quickly:
 
 ```powershell
-.\scripts\smoke_milestone3.ps1
+.\scripts\smoke_milestone4.ps1
 ```

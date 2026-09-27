@@ -33,6 +33,7 @@ _REQUIRED_SECTIONS = {
     "panel",
     "evaluation",
     "baselines",
+    "graph_models",
     "guardrails",
 }
 
@@ -341,5 +342,55 @@ def load_config(path: str | Path) -> ProjectConfig:
         "boosted_l2_regularization",
     ):
         _require_positive_number(baselines.get(field), f"baselines.{field}")
+
+    graph_models = sections["graph_models"]
+    graph_run_version = graph_models.get("run_version")
+    if not isinstance(graph_run_version, str) or not graph_run_version.strip():
+        raise ConfigError("graph_models.run_version must be a non-empty string")
+    if graph_models.get("adjacency_method") != "shared_endpoint_one_hop_mean":
+        raise ConfigError("graph_models.adjacency_method must remain shared_endpoint_one_hop_mean")
+    graph_feature_columns = graph_models.get("graph_feature_columns")
+    if (
+        not isinstance(graph_feature_columns, list)
+        or not graph_feature_columns
+        or any(not isinstance(value, str) or not value for value in graph_feature_columns)
+        or len(set(graph_feature_columns)) != len(graph_feature_columns)
+    ):
+        raise ConfigError("graph_models.graph_feature_columns must be unique non-empty strings")
+    for field in (
+        "boosted_max_iter",
+        "boosted_max_leaf_nodes",
+        "boosted_min_samples_leaf",
+        "neural_batch_size",
+        "neural_max_iter",
+        "neural_n_iter_no_change",
+    ):
+        value = graph_models.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise ConfigError(f"graph_models.{field} must be a positive integer")
+    hidden_sizes = graph_models.get("neural_hidden_layer_sizes")
+    if (
+        not isinstance(hidden_sizes, list)
+        or not hidden_sizes
+        or any(
+            isinstance(value, bool) or not isinstance(value, int) or value <= 0
+            for value in hidden_sizes
+        )
+    ):
+        raise ConfigError("graph_models.neural_hidden_layer_sizes must contain positive integers")
+    for field in (
+        "boosted_learning_rate",
+        "boosted_l2_regularization",
+        "neural_alpha",
+        "neural_learning_rate_init",
+        "promotion_min_absolute_gain",
+        "promotion_max_brier_relative_degradation",
+        "promotion_max_interval_coverage_drop",
+    ):
+        _require_non_negative_number(graph_models.get(field), f"graph_models.{field}")
+    if graph_models["boosted_learning_rate"] == 0:
+        raise ConfigError("graph_models.boosted_learning_rate must be positive")
+    if graph_models["neural_learning_rate_init"] == 0:
+        raise ConfigError("graph_models.neural_learning_rate_init must be positive")
 
     return ProjectConfig(source_path=source_path.resolve(), values=loaded)

@@ -58,6 +58,12 @@ The completed Milestone 3 baseline set stops before neighbour aggregates: histor
 empirical-Bayes rate, exposure-aware Poisson and a boosted tree using tabular panel features. Graph
 summaries belong to Milestone 4.
 
+Milestone 4 reuses the exact saved fold dates, populations and row fingerprints. It compares the
+retained boosted-tree and empirical-Bayes predictions with a graph-feature boosted tree and a
+compact GraphSAGE-style candidate. Graph summaries are computed independently inside each split;
+the Brisbane fold excludes cross-boundary messages. Quarter-block bootstrap intervals are reported
+for top-1% means and paired model differences.
+
 ## Metrics
 
 ### Rare-event classification

@@ -88,6 +88,10 @@ Acceptance criteria:
 
 ## Milestone 4 — Graph and spatiotemporal modelling
 
+**Status:** Complete on 26 September 2026. The graph-feature boosted tree advances as a Milestone 5
+robustness candidate; the spatiotemporal neural candidate does not beat the retained baselines. See
+`reports/milestone_4_completion.md`.
+
 Deliverables:
 
 - graph construction and validation report;

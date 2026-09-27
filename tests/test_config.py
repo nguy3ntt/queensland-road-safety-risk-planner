@@ -16,6 +16,7 @@ def test_base_config_is_valid() -> None:
     )
     assert config.values["segmentation"]["projected_crs"] == "EPSG:9473"
     assert config.values["baselines"]["test_window_periods"] == 4
+    assert config.values["graph_models"]["adjacency_method"] == ("shared_endpoint_one_hop_mean")
     assert config.values["guardrails"]["causal_claims_allowed"] is False
 
 
@@ -89,4 +90,12 @@ def test_baseline_target_cannot_change_silently(tmp_path: Path) -> None:
     values["baselines"]["target_column"] = "serious_crash_occurrence_next_1q"
 
     with pytest.raises(ConfigError, match="target_column"):
+        load_config(_write_config(tmp_path, values))
+
+
+def test_graph_adjacency_method_cannot_change_silently(tmp_path: Path) -> None:
+    values = _base_values()
+    values["graph_models"]["adjacency_method"] = "outcome_similarity"
+
+    with pytest.raises(ConfigError, match="adjacency_method"):
         load_config(_write_config(tmp_path, values))

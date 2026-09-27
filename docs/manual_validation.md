@@ -91,6 +91,38 @@ This fits four models across three rolling origins and one Brisbane transfer fol
 ignored generated/model-output artifacts and the two public figures. On the current local machine it
 typically completes in roughly one to two minutes; timing varies by CPU and storage.
 
+## Quick Milestone 4 smoke test
+
+After the local graph-model artifacts have been retained:
+
+```powershell
+.\scripts\smoke_milestone4.ps1
+```
+
+Expected result: `"status": "passed"` with every check passing. The command validates all ten
+scientific gates, exact Parquet checksums, the configured run version, and the four public reports
+plus two figures. It does not retrain a model.
+
+For a quick human-readable result check:
+
+```powershell
+.venv\Scripts\python.exe -c "import json; s=json.load(open('reports/generated/milestone4/summary.json')); print('next=',s['promotion_decision']['recommended_for_milestone5']); [print(x['model_name'],round(100*x['chronological_mean_captured_weight_fraction'],2),round(100*x['geographic_mean_captured_weight_fraction'],2)) for x in s['selection']]"
+```
+
+Expected recommendation: `graph_feature_boosted_tree`. The printed rolling/Brisbane top-1% values
+are approximately 8.48/7.48, 8.99/6.69, 9.08/8.56 and 7.71/7.28 percent.
+
+## Optional full Milestone 4 retraining
+
+```powershell
+.\scripts\train_milestone4.ps1
+```
+
+This rebuilds split-local graph features, trains five candidate/ablation variants over the saved
+folds and rewrites only ignored generated/model-output artifacts plus the two public figures. The
+verified run took about 2.4 minutes on the current local CPU; runtime varies by hardware. Neural
+fits currently reach the configured epoch cap, which is disclosed in the compute report.
+
 ## Optional full audit rebuild
 
 Only run this when you intentionally want to rebuild the generated Milestone 1 evidence:

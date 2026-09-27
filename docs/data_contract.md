@@ -125,3 +125,15 @@ must be finite and non-negative; interval bounds must be finite, ordered and non
 Trained estimators are not committed. Reproducibility comes from the versioned protocol,
 dependencies, fold manifest, deterministic seed, checksummed panel and checksummed prediction and
 metric artifacts.
+
+## `graph_model_prediction`
+
+Milestone 4 retains the `baseline_prediction` keys and outcome fields for the two baseline
+references and two graph candidates. Every model must share the exact Milestone 3 test-row
+fingerprint. Graph message inputs are restricted to configured feature columns with no `next_1q`
+field; their availability timestamps must not exceed the cutoff.
+
+The saved adjacency remains an undirected topology table. Directed model messages are generated in
+memory and, for a geographic holdout, may connect only nodes present in that train, calibration or
+test split. Ablation row predictions need not be retained, but their fold and budget metrics must be
+saved with the model name and identical fold identifiers.

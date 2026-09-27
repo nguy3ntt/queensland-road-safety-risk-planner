@@ -184,3 +184,37 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
   Brisbane.
 - **Consequence:** Geographic reliability and abstention remain Milestone 5 requirements. Current
   intervals must not be described as universally calibrated.
+
+## M4-D018 — Graph representation and holdout isolation
+
+- **State:** Accepted at Milestone 4
+- **Decision:** Use the versioned one-metre endpoint-adjacency graph with one-hop mean messages from
+  allow-listed point-in-time fields. Build messages separately inside every train, calibration and
+  test split; exclude cross-boundary edges in the Brisbane transfer fold.
+- **Evidence:** All 48,759 nodes and 59,756 undirected pairs reconcile with saved degrees. There are
+  no self-loops, duplicate pairs or unknown nodes. Sixty-nine edges cross the Brisbane boundary and
+  are excluded from geographic messages.
+- **Consequence:** The experiment is conservative and inductive. Directed/turn-weighted or alternate
+  tolerance graphs require a separately versioned upstream sensitivity study.
+
+## M4-D019 — Graph candidate continuation
+
+- **State:** Accepted with qualification at Milestone 4
+- **Decision:** Advance the graph-feature boosted tree to Milestone 5 robustness testing. Keep the
+  ordinary boosted tree and empirical Bayes as required references.
+- **Evidence:** The graph-feature tree captures 9.077% in the rolling top 1%, only 0.085 percentage
+  points over the ordinary tree with a paired interval crossing zero. It captures 8.563% in held-out
+  Brisbane, 1.082 points over empirical Bayes, while Brier score and interval coverage remain
+  similar.
+- **Consequence:** This is candidate continuation, not final selection. Broader geographic transfer,
+  subgroup calibration and abstention must determine whether the graph summary is retained.
+
+## M4-D020 — Neural graph candidate
+
+- **State:** Rejected as primary candidate at Milestone 4
+- **Decision:** Do not promote the compact spatiotemporal GraphSAGE-style neural count model.
+- **Evidence:** It captures 7.707% in the rolling top 1%, 1.285 points below the ordinary boosted
+  tree with a paired 95% interval wholly below zero. Its mean adjacent-quarter top-1% Jaccard is
+  0.483, and its fits reach the bounded 30-epoch cap.
+- **Consequence:** Retain the implementation and negative result for audit, but do not add neural
+  complexity to Milestone 5 unless new evidence or a separately approved experiment justifies it.

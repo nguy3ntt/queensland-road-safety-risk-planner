@@ -90,6 +90,37 @@ baselines:
   boosted_min_samples_leaf: 100
   boosted_l2_regularization: 1.0
 
+graph_models:
+  run_version: graph_models_v1_2026_09_26
+  adjacency_method: shared_endpoint_one_hop_mean
+  graph_feature_columns:
+    - temporal_recent_weight_rate
+    - temporal_middle_weight_rate
+    - temporal_older_weight_rate
+    - temporal_recent_event_rate
+    - temporal_middle_event_rate
+    - temporal_older_event_rate
+    - log_length_m
+    - log_aadt
+    - log_exposure
+    - aadt_age_years
+  boosted_learning_rate: 0.05
+  boosted_max_iter: 120
+  boosted_max_leaf_nodes: 15
+  boosted_min_samples_leaf: 100
+  boosted_l2_regularization: 1.0
+  neural_hidden_layer_sizes:
+    - 16
+    - 8
+  neural_alpha: 0.001
+  neural_learning_rate_init: 0.001
+  neural_batch_size: 4096
+  neural_max_iter: 30
+  neural_n_iter_no_change: 5
+  promotion_min_absolute_gain: 0.0025
+  promotion_max_brier_relative_degradation: 0.02
+  promotion_max_interval_coverage_drop: 0.02
+
 guardrails:
   causal_claims_allowed: false
   intervention_recommendations_allowed: false
