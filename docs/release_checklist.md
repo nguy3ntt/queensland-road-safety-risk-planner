@@ -12,7 +12,7 @@ commit while the release changes are uncommitted.
       both export formats; keep raw data and generated reports out of Git.
 - [ ] On a Docker-capable machine, build and run the image with read-only serving mounts. Confirm
       the app starts with valid artifacts and fails closed when an artifact is absent or altered.
-- [ ] After committing, inspect the first GitHub Actions run on Linux and Windows, including its
+- [x] After committing, inspect the GitHub Actions run on Linux and Windows, including its
       synthetic, test-only container API check. Do not infer success from the workflow file alone.
 - [ ] Review the demo screenshot and keyboard-accessibility steps on a real browser.
 - [ ] Confirm only intended code and public protocol files are tracked; no data, secrets, model
@@ -28,8 +28,8 @@ Suggested verification commands from the repository root:
     .\scripts\audit_milestone7.ps1
     .\scripts\smoke_milestone7.ps1
 
-The first pushed CI run passed Linux and Windows Python verification, but its container job failed
-before image build when PyPI timed out on `python-dateutil`. The retry-adjusted workflow needs a
-new owner commit and a successful CI run. The private browser screenshot exists; the human
-screen-reader review, Docker runtime check and tag are still pending. This checklist does not
+The first pushed CI run passed Linux and Windows Python verification but stopped before image
+build when PyPI timed out on `python-dateutil`. The retry-adjusted run on commit `9d422ea` passed
+all three jobs, including the container build and API smoke. The private browser screenshot exists;
+the human screen-reader review, local Docker Compose check and tag are still pending. This checklist does not
 authorize deployment or data refresh.

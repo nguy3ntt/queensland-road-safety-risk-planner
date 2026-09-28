@@ -205,8 +205,8 @@ for CC BY 4.0, source links and a modification marker. The private drift report 
 flag the OOD-score distribution shift. Do not interpret it as live drift.
 
 On a Docker-capable machine, follow `docs/reproducibility.md` for a read-only mounted startup and
-verify `/health` and `/api/v1/meta`. The first pushed GitHub Actions run passed both Python jobs
-but stopped before image build on a PyPI timeout. Check the next run after the owner commits the
-retry adjustment. The annotated tag belongs on that reviewed commit. A private headless-Edge
+verify `/health` and `/api/v1/meta`. The first pushed GitHub Actions run stopped before image
+build on a PyPI timeout; the retry-adjusted run passed all Linux, Windows and container jobs.
+The annotated tag belongs on the final reviewed commit. A private headless-Edge
 screenshot is retained at `reports/generated/milestone7/historical-demo-clarified.png`; a human
 screen-reader check remains required because the interactive browser-control helper did not start.

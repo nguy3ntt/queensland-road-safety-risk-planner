@@ -56,7 +56,8 @@ user with a read-only filesystem, and publishes port 8000 on 127.0.0.1 only. Che
 `/api/v1/meta`. Stop with `docker compose down`. Do not expose this research demonstration on a
 public interface or present it as an operational safety service. Docker was not available on the
 Milestone 7 development host. The first pushed CI run stopped before image build when PyPI timed
-out during synthetic-fixture dependency installation; a later CI run must verify the image.
+out during synthetic-fixture dependency installation; the retry-adjusted next run built the image
+and passed its synthetic API smoke check.
 
 ## Verification and release record
 

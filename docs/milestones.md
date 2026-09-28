@@ -154,10 +154,10 @@ Acceptance criteria:
 ## Milestone 7 — Production hardening and showcase
 
 **Status:** Implementation and local Python verification complete on 28 September 2026 for a
-historical research demonstration. A private headless-browser screenshot was captured. The first
-pushed GitHub Actions run passed both Python jobs, but the container job stopped on repeated PyPI
-timeouts while installing its synthetic-fixture dependencies. A retry-adjusted workflow needs a
-new owner commit and successful CI run. The Docker runtime check, human screen-reader review and
+historical research demonstration. A private headless-browser screenshot was captured. After a
+transient PyPI timeout on the first CI run, the next pushed commit passed Linux, Windows and
+container checks, including the synthetic-fixture API smoke. The local Docker Compose check,
+human screen-reader review and
 annotated tag remain pending. This is not live production approval. The private drift report flags
 an OOD diagnostic PSI of 1.387 and weak geographic interval coverage for review.
 
