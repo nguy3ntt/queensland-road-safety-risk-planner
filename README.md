@@ -156,12 +156,12 @@ The final application should provide:
 
 ## Initial setup
 
-Python 3.11 is recommended.
+Python 3.12 is the tested release reference (3.11–3.13 are supported).
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev,geo,ml]"
+python -m pip install -e ".[dev,geo,ml,app]"
 qrs validate-config --config configs/base.yaml
 qrs validate-manifest --manifest configs/provenance.example.yaml
 pytest
@@ -170,7 +170,7 @@ pytest
 Using `uv` is also supported:
 
 ```powershell
-uv sync --extra dev --extra geo --extra ml
+uv sync --extra dev --extra geo --extra ml --extra app
 uv run qrs validate-config --config configs/base.yaml
 uv run pytest
 ```
@@ -190,12 +190,23 @@ explicit supported interpreter:
 
 ## Where to begin
 
-The next approved scope is **Milestone 7: production hardening and showcase**. See
-[docs/milestones.md](docs/milestones.md).
+Milestone 7 implementation is ready for repository-owner release review. The historical research
+demonstration is **not** approved as a live operational safety system. See
+[docs/release_checklist.md](docs/release_checklist.md) and
+[docs/reproducibility.md](docs/reproducibility.md).
 
 ## Current status
 
-Milestones 0 through 6 are complete. Milestone 6 adds a local, read-only API and interactive map
+Milestones 0 through 6 are complete. Milestone 7 adds a data-free container build, Linux/Windows
+CI definitions, a governed refresh design, public source attribution, a private historical drift
+review and a final technical report. A fresh Python 3.12 wheel install and local HTTP startup
+have been verified. Docker was not available on the development host; its runtime check, the
+first committed CI run, a browser screenshot and the owner's release tag remain release-checklist
+items. The OOD diagnostic shifted markedly between historical serving cutoffs (PSI 1.387), and
+Gold Coast interval coverage was below the 90% target, so no current-data or deployment claim is
+made.
+
+Milestone 6 adds a local, read-only API and interactive map
 over the approved historical held-out scores. It publishes 170,220 segment-period scores across
 four forecast cutoffs (42,555 segments per cutoff), a precomputed multi-resolution map layer,
 budgeted investigation shortlists, segment-level quality and uncertainty views, and GeoJSON or
@@ -231,6 +242,17 @@ interval and exposure tier, then export GeoJSON or GeoParquet. The interface nev
 observed outcomes or estimates treatment benefits. The API starts only when local artifact
 checksums match; it does not fit models on requests. Local reports and generated data remain
 excluded from Git.
+
+For the final local historical evidence check:
+
+    .\scripts\audit_milestone7.ps1
+    .\scripts\smoke_milestone7.ps1
+
+The private drift and final technical reports are under the Git-ignored `reports/` directory.
+Source attribution and adaptation notices are public in
+[docs/attribution.md](docs/attribution.md) and linked from the app. A quarterly refresh is only a
+reviewed design in [docs/refresh_operations.md](docs/refresh_operations.md); no scheduled ingest
+or model promotion is enabled.
 
 Milestone reports and figures are local review evidence and are ignored by Git. Public repository
 documentation records only verified aggregate decisions and limitations.

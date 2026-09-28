@@ -148,11 +148,17 @@ def test_exports_contain_selected_eligible_segments_only(client: TestClient) -> 
     geojson = client.get("/api/v1/export", params={**params, "format": "geojson"})
     assert geojson.status_code == 200
     assert [feature["id"] for feature in geojson.json()["features"]] == ["A"]
+    assert (
+        geojson.json()["source_data_license_url"] == "https://creativecommons.org/licenses/by/4.0/"
+    )
+    assert geojson.json()["source_data_modified"] is True
     parquet = client.get("/api/v1/export", params={**params, "format": "geoparquet"})
     assert parquet.status_code == 200
     exported = gpd.read_parquet(io.BytesIO(parquet.content))
     assert exported["segment_id"].tolist() == ["A"]
     assert exported.crs.to_epsg() == 4326
+    assert exported["source_data_modified"].tolist() == [True]
+    assert "creativecommons.org/licenses/by/4.0" in exported.iloc[0]["source_data_license_url"]
 
 
 def test_interface_has_accessible_fallback_and_clear_limits(client: TestClient) -> None:
@@ -170,6 +176,8 @@ def test_interface_has_accessible_fallback_and_clear_limits(client: TestClient) 
         assert marker in html.text
     assert client.get("/static/app.js").status_code == 200
     assert client.get("/static/app.css").status_code == 200
+    assert client.get("/static/attribution.html").status_code == 200
+    assert "Data attribution and licence" in html.text
 
 
 def test_ranking_and_map_cells_are_deterministic() -> None:

@@ -104,6 +104,16 @@ def build_parser() -> argparse.ArgumentParser:
     serve_milestone6.add_argument("--project-root", default=".")
     serve_milestone6.add_argument("--host", default="127.0.0.1")
     serve_milestone6.add_argument("--port", type=int, default=8000)
+
+    audit_milestone7 = subparsers.add_parser(
+        "audit-milestone7", help="review historical drift and release evidence"
+    )
+    audit_milestone7.add_argument("--project-root", default=".")
+
+    smoke_milestone7 = subparsers.add_parser(
+        "smoke-milestone7", help="verify retained Milestone 7 review evidence"
+    )
+    smoke_milestone7.add_argument("--project-root", default=".")
     return parser
 
 
@@ -341,6 +351,39 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 2
         uvicorn.run(app, host=args.host, port=args.port)
         return 0
+
+    if args.command == "audit-milestone7":
+        from qld_road_safety.milestone7 import run_milestone7_audit
+
+        try:
+            result = run_milestone7_audit(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(
+            json.dumps(
+                {
+                    "status": "complete",
+                    "audit_version": result["audit_version"],
+                    "release_scope": result["release_scope"],
+                    "drift_warnings": sum(item["warning"] for item in result["drift"]),
+                    "checks_passed": all(item["passed"] for item in result["checks"]),
+                },
+                indent=2,
+            )
+        )
+        return 0 if all(item["passed"] for item in result["checks"]) else 2
+
+    if args.command == "smoke-milestone7":
+        from qld_road_safety.milestone7 import smoke_milestone7
+
+        try:
+            result = smoke_milestone7(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] == "passed" else 2
 
     if args.command == "acquire-milestone1":
         try:

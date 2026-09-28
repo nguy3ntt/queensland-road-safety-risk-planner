@@ -189,3 +189,22 @@ report that a broad view is truncated; zoom in rather than treating the subset a
 The warning must continue to say that the view is historical and non-causal. Tab through
 the controls and shortlist, and use arrow and plus/minus keys on the focused map. These are
 manual usability checks, not scientific validation of newly refreshed forecasts.
+
+## Quick Milestone 7 release check
+
+From the repository root, after the approved local artifacts are present:
+
+    .\scripts\verify.ps1
+    .\scripts\audit_milestone7.ps1
+    .\scripts\smoke_milestone7.ps1
+
+Expected local result: all automated tests and quality checks pass, the audit reports a historical
+research-demonstration scope, and the smoke check passes all seven evidence checks. Open the app,
+follow the private demo scenario, then open the data-attribution page and inspect both exports
+for CC BY 4.0, source links and a modification marker. The private drift report should explicitly
+flag the OOD-score distribution shift. Do not interpret it as live drift.
+
+On a Docker-capable machine, follow `docs/reproducibility.md` for a read-only mounted startup and
+verify `/health` and `/api/v1/meta`. Inspect the first GitHub Actions run after the owner commits.
+The annotated tag belongs on that reviewed commit. A browser screenshot and human screen-reader
+check are still required; the development host's browser-control helper did not start.

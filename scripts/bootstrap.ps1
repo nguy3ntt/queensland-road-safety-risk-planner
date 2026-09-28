@@ -29,8 +29,8 @@ try {
     Invoke-PythonCommand @("-m", "qld_road_safety.cli", "validate-config", "--config", "configs/base.yaml")
     Invoke-PythonCommand @("-m", "qld_road_safety.cli", "validate-manifest", "--manifest", "configs/provenance.example.yaml")
     Invoke-PythonCommand @("-m", "pytest")
-    Invoke-PythonCommand @("-m", "ruff", "check", "src", "tests")
-    Invoke-PythonCommand @("-m", "ruff", "format", "--check", "src", "tests")
+    Invoke-PythonCommand @("-m", "ruff", "check", "src", "tests", "scripts")
+    Invoke-PythonCommand @("-m", "ruff", "format", "--check", "src", "tests", "scripts")
     Invoke-PythonCommand @("-m", "mypy")
 }
 finally {

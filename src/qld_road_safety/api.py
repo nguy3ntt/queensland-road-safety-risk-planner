@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import json
 import math
+import os
 from pathlib import Path
 from typing import Any, Literal
 
@@ -82,21 +83,26 @@ class ScoreStore:
         manifest = json.loads((generated / "artifact_manifest.json").read_text(encoding="utf-8"))
         if summary["run_version"] != config["serving"]["run_version"]:
             raise ValueError("Serving artifacts do not match the configured run version")
-        if (
-            summary["model_name"] != "boosted_tree"
-            or summary["mode"] != "historical_holdout_demonstration"
-        ):
+        synthetic = summary.get("synthetic_fixture", False) is True
+        if synthetic and os.environ.get("QRS_ALLOW_SYNTHETIC_FIXTURE") != "1":
+            raise ValueError("Synthetic CI fixture requires an explicit test-only opt-in")
+        expected_mode = "synthetic_ci_fixture" if synthetic else "historical_holdout_demonstration"
+        if summary["model_name"] != "boosted_tree" or summary["mode"] != expected_mode:
             raise ValueError("Serving artifacts are not the approved historical model")
         expected_files = {"scores.parquet", "road_geometry.parquet", "map_cells.parquet"}
         if len(manifest) != 3 or {Path(item["path"]).name for item in manifest} != expected_files:
             raise ValueError("Incomplete or unexpected serving manifest")
+        output = root / "data" / "processed" / "milestone6" / summary["run_version"]
+        expected_paths = {(output / name).resolve() for name in expected_files}
+        manifest_paths = {(root / str(item["path"])).resolve() for item in manifest}
+        if manifest_paths != expected_paths:
+            raise ValueError("Serving manifest paths do not match the configured snapshot")
         for item in manifest:
             path = (root / item["path"]).resolve()
             if not path.is_relative_to(root) or not path.is_file():
                 raise ValueError("Serving artifact path is missing or outside the project")
             if sha256_file(path) != item["sha256"]:
                 raise ValueError(f"Serving artifact checksum mismatch: {path.name}")
-        output = root / "data" / "processed" / "milestone6" / summary["run_version"]
         self.scores = pd.read_parquet(output / "scores.parquet")
         self.geometries = gpd.read_parquet(output / "road_geometry.parquet").set_index("segment_id")
         self.cells = pd.read_parquet(output / "map_cells.parquet")
@@ -162,14 +168,16 @@ def create_app(project_root: str | Path) -> FastAPI:
 
     @app.get("/health")
     def health() -> dict[str, str]:
-        return {"status": "ok", "mode": "historical_holdout_demonstration"}
+        return {"status": "ok", "mode": str(store.summary["mode"])}
 
     @app.get("/api/v1/meta")
     def meta() -> dict[str, Any]:
         return {
             "mode": store.summary["mode"],
             "notice": (
-                "Historical held-out forecasts for analyst investigation only; not live risk."
+                "Synthetic CI test data only; no real crash-risk values."
+                if store.summary.get("synthetic_fixture")
+                else "Historical held-out forecasts for analyst investigation only; not live risk."
             ),
             "run_version": store.summary["run_version"],
             "model_name": store.summary["model_name"],
@@ -177,6 +185,7 @@ def create_app(project_root: str | Path) -> FastAPI:
             "network_version": store.summary["network_version"],
             "source_fold": store.summary["source_fold"],
             "source_prediction_sha256": store.summary["source_prediction_sha256"],
+            "data_attribution_url": "/static/attribution.html",
             "periods": store.summary["periods"],
             "bounds_wgs84": store.summary["bounds_wgs84"],
             "grid_sizes_degrees": store.config["serving"]["grid_sizes_degrees"],
@@ -337,6 +346,17 @@ def create_app(project_root: str | Path) -> FastAPI:
                     "type": "FeatureCollection",
                     "name": filename,
                     "mode": store.summary["mode"],
+                    "source_data_attribution": (
+                        "Queensland Government open data; see /static/attribution.html"
+                    ),
+                    "source_data_license_url": "https://creativecommons.org/licenses/by/4.0/",
+                    "source_data_modified": True,
+                    "source_data_sources": [
+                        "https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads",
+                        "https://www.data.qld.gov.au/dataset/road-location-and-traffic-data",
+                        "https://www.data.qld.gov.au/dataset/traffic-census-for-the-queensland-state-declared-road-network",
+                        "https://www.data.qld.gov.au/dataset/queensland-roads-and-tracks",
+                    ],
                     "features": features,
                 },
                 allow_nan=False,
@@ -347,6 +367,16 @@ def create_app(project_root: str | Path) -> FastAPI:
                 headers={"Content-Disposition": f'attachment; filename="{filename}.geojson"'},
             )
         export_rows = selected.loc[:, list(PUBLIC_FIELDS)].copy()
+        export_rows["source_data_attribution"] = "Queensland Government open data"
+        export_rows["source_data_license_url"] = "https://creativecommons.org/licenses/by/4.0/"
+        export_rows["source_data_modified"] = True
+        export_rows["source_data_sources"] = (
+            "https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads; "
+            "https://www.data.qld.gov.au/dataset/road-location-and-traffic-data; "
+            "https://www.data.qld.gov.au/dataset/"
+            "traffic-census-for-the-queensland-state-declared-road-network; "
+            "https://www.data.qld.gov.au/dataset/queensland-roads-and-tracks"
+        )
         geometry = gpd.GeoSeries(
             [store.geometries.loc[segment_id].geometry for segment_id in selected["segment_id"]],
             crs="EPSG:4326",

@@ -256,3 +256,17 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
   1 April–30 June 2024. Map cells are precomputed at three resolutions.
 - **Consequence:** A future-period refresh requires a new approved and audited score snapshot;
   the API does not infer or retrain during a request.
+
+## M7-D024 — Research release boundary and drift escalation
+
+- **State:** Accepted for local research demonstration; public release checks pending
+- **Decision:** Container and CI definitions may package code but no raw data, model weights or
+  generated scores. Refresh remains a human-gated design, not an enabled schedule. Source-data
+  attribution travels with the UI and exports. Tag only the owner's reviewed commit.
+- **Evidence:** A clean Python 3.12 wheel install and local HTTP startup passed. The historical
+  OOD diagnostic shifted between the first and last serving cutoffs (PSI 1.387 against a 0.20
+  review threshold), while Gold Coast retained interval coverage was 74.768%. Docker was absent
+  locally, and CI cannot execute until changes are committed.
+- **Consequence:** The research demonstration may be reviewed, but no live operational or
+  prospective model-performance claim is approved. The drift and geographic reliability signals
+  require investigation before a refreshed deployment.

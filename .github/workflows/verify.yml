@@ -1,0 +1,67 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.12']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install all project extras
+        run: python -m pip install -e ".[dev,geo,ml,app]"
+      - name: Validate configuration
+        run: python -m qld_road_safety.cli validate-config --config configs/base.yaml
+      - name: Validate provenance example
+        run: python -m qld_road_safety.cli validate-manifest --manifest configs/provenance.example.yaml
+      - name: Test
+        run: python -m pytest
+      - name: Lint
+        run: python -m ruff check src tests scripts
+      - name: Formatting
+        run: python -m ruff format --check src tests scripts
+      - name: Types
+        run: python -m mypy
+      - name: Build wheel
+        run: python -m pip wheel --no-deps --wheel-dir dist .
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install fixture dependencies
+        run: python -m pip install -e ".[app]"
+      - name: Create synthetic test-only serving mounts
+        run: python scripts/make_ci_bundle.py "$RUNNER_TEMP/qrs-ci-bundle"
+      - name: Build data-free app image
+        run: docker build --tag qrs-planner:ci .
+      - name: Start test-only container
+        run: |
+          docker run --detach --rm --name qrs-ci --read-only --tmpfs /tmp \
+            --cap-drop ALL --security-opt no-new-privileges \
+            --publish 127.0.0.1:8765:8000 \
+            --env QRS_ALLOW_SYNTHETIC_FIXTURE=1 \
+            --volume "$RUNNER_TEMP/qrs-ci-bundle/data/processed/milestone6:/app/data/processed/milestone6:ro" \
+            --volume "$RUNNER_TEMP/qrs-ci-bundle/reports/generated/milestone6:/app/reports/generated/milestone6:ro" \
+            qrs-planner:ci
+      - name: Exercise container API and abstention
+        run: python scripts/smoke_container.py http://127.0.0.1:8765
+      - name: Stop test container
+        if: always()
+        run: docker stop qrs-ci || true
