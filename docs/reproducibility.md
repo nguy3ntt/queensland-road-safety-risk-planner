@@ -55,8 +55,8 @@ Compose mounts the two required Milestone 6 artifact directories read-only, runs
 user with a read-only filesystem, and publishes port 8000 on 127.0.0.1 only. Check `/health` and
 `/api/v1/meta`. Stop with `docker compose down`. Do not expose this research demonstration on a
 public interface or present it as an operational safety service. Docker was not available on the
-Milestone 7 development host; the image build is defined in CI and must be reviewed after the
-first committed run.
+Milestone 7 development host. The first pushed CI run stopped before image build when PyPI timed
+out during synthetic-fixture dependency installation; a later CI run must verify the image.
 
 ## Verification and release record
 

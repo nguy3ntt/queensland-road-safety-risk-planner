@@ -46,7 +46,7 @@ jobs:
           python-version: '3.12'
           cache: pip
       - name: Install fixture dependencies
-        run: python -m pip install -e ".[app]"
+        run: python -m pip --timeout 60 --retries 8 install -e ".[app]"
       - name: Create synthetic test-only serving mounts
         run: python scripts/make_ci_bundle.py "$RUNNER_TEMP/qrs-ci-bundle"
       - name: Build data-free app image

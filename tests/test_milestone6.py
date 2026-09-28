@@ -172,6 +172,7 @@ def test_interface_has_accessible_fallback_and_clear_limits(client: TestClient) 
         "Not live safety advice",
         "crashes prevented",
         "Budgeted shortlist",
+        "These overview cells do not change with the investigation budget",
     ):
         assert marker in html.text
     assert client.get("/static/app.js").status_code == 200

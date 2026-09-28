@@ -199,10 +199,12 @@ demonstration is **not** approved as a live operational safety system. See
 
 Milestones 0 through 6 are complete. Milestone 7 adds a data-free container build, Linux/Windows
 CI definitions, a governed refresh design, public source attribution, a private historical drift
-review and a final technical report. A fresh Python 3.12 wheel install and local HTTP startup
-have been verified. Docker was not available on the development host; its runtime check, the
-first committed CI run, a browser screenshot and the owner's release tag remain release-checklist
-items. The OOD diagnostic shifted markedly between historical serving cutoffs (PSI 1.387), and
+review and a final technical report. A fresh Python 3.12 wheel install, local HTTP startup and a
+private browser screenshot have been verified. The first pushed CI run passed both Python jobs but
+its container job stopped during a PyPI timeout; the dependency-install retry adjustment needs a
+new owner commit and CI run. Docker was not available on the development host; its runtime check,
+the human screen-reader review and the owner's release tag remain release-checklist items. The OOD
+diagnostic shifted markedly between historical serving cutoffs (PSI 1.387), and
 Gold Coast interval coverage was below the 90% target, so no current-data or deployment claim is
 made.
 

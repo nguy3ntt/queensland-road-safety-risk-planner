@@ -266,7 +266,8 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
 - **Evidence:** A clean Python 3.12 wheel install and local HTTP startup passed. The historical
   OOD diagnostic shifted between the first and last serving cutoffs (PSI 1.387 against a 0.20
   review threshold), while Gold Coast retained interval coverage was 74.768%. Docker was absent
-  locally, and CI cannot execute until changes are committed.
+  locally. On the first pushed commit, both Python CI jobs passed; the container job stopped
+  before image build after repeated PyPI timeouts fetching `python-dateutil`.
 - **Consequence:** The research demonstration may be reviewed, but no live operational or
   prospective model-performance claim is approved. The drift and geographic reliability signals
   require investigation before a refreshed deployment.

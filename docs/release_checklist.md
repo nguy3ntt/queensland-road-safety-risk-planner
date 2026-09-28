@@ -28,5 +28,8 @@ Suggested verification commands from the repository root:
     .\scripts\audit_milestone7.ps1
     .\scripts\smoke_milestone7.ps1
 
-The tag and GitHub CI result remain pending until the owner commits and pushes. This checklist
-does not authorize deployment or data refresh.
+The first pushed CI run passed Linux and Windows Python verification, but its container job failed
+before image build when PyPI timed out on `python-dateutil`. The retry-adjusted workflow needs a
+new owner commit and a successful CI run. The private browser screenshot exists; the human
+screen-reader review, Docker runtime check and tag are still pending. This checklist does not
+authorize deployment or data refresh.

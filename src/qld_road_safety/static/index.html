@@ -36,7 +36,7 @@
     <section class="layout">
       <div class="panel">
         <div class="section-heading"><h2>Map overview</h2><div><button id="zoom-in" type="button" aria-label="Zoom in">+</button> <button id="zoom-out" type="button" aria-label="Zoom out">−</button> <button id="reset-map" type="button">Reset map</button></div></div>
-        <p>Colour shows mean predicted serious-crash weight in precomputed cells. Zoom in to inspect individual road segments; a bounded sample is shown for busy views.</p>
+        <p>Colour shows mean predicted serious-crash weight in precomputed cells for the chosen period. These overview cells do not change with the investigation budget or region and road-class filters; those controls change the shortlist and exports. Zoom in to inspect individual road segments; a bounded sample is shown for busy views.</p>
         <canvas id="map" width="900" height="650" tabindex="0" role="img" aria-label="Interactive Queensland road risk map. Use arrow keys to pan and plus or minus to zoom."></canvas>
         <p id="map-status" role="status" aria-live="polite"></p>
         <p class="legend"><span class="swatch low"></span> Lower expected weight <span class="swatch high"></span> Higher expected weight <span class="swatch withheld"></span> Withheld by uncertainty rule</p>
