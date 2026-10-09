@@ -39,6 +39,15 @@ coverage and limitations are retained in the local Milestone 2 data-quality repo
 The network is a current snapshot used retrospectively. It is not evidence that every segment,
 alignment or road attribute existed unchanged in earlier panel periods.
 
+## Separate post-2024 validation of the pinned crash release
+
+On 9 October 2026 a separate temporal test used later events already present in the checksummed
+24 April 2026 crash-source release. The publisher's 12-month preliminary notice was anchored to
+that release date: outcomes through March 2025 were included; April–June 2025 remained excluded.
+This is **not** a newly acquired crash release and does not revise the approved Milestone 2 panel
+or its June 2024 label cutoff. The exact protocol, new-period results and limitations are in
+[new_period_validation.md](new_period_validation.md).
+
 ## 1. Queensland crash data — required
 
 Publisher: Queensland Department of Transport and Main Roads.

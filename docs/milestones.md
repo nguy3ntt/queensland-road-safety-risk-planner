@@ -181,7 +181,12 @@ Acceptance criteria:
 
 ## Optional research extensions
 
-Only after Milestone 7:
+The first post-Milestone 7 research extension is a separate, completed
+[July 2024–March 2025 temporal holdout](new_period_validation.md). It reuses the pinned source
+release, preserves the approved web-demo snapshot and records an operational no-go because
+positive-outcome intervals and some regions remain unreliable. It is not a new deployment milestone.
+
+Other possible extensions:
 
 - dynamic graph changes over time;
 - transfer learning between Queensland regions;

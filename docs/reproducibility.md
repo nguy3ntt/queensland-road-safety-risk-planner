@@ -70,6 +70,13 @@ The local Milestone 7 audit verifies the retained serving bundle,
 records data/score distribution shifts and historic rolling performance, and writes Git-ignored
 reports.
 
+An independent post-2024 temporal validation reuses the same pinned local source snapshot but
+does not alter the app or original model-selection outputs. With the Milestone 2 and 5 artifacts
+present, run `qrs validate-new-period --project-root .` and then
+`qrs smoke-new-period --project-root .`. Its row-level outputs and detailed report remain under
+Git-ignored local directories. See [new_period_validation.md](new_period_validation.md) for the
+source-release cutoff rule, metrics and operational no-go decision.
+
 The app's metadata displays model, network and serving versions and the historical forecast
 periods. The provenance is: boosted-tree model `robustness_v1_2026_09_27`, network
 `qrt_state_controlled_2026_09_26`, and serving snapshot `decision_app_v1_2026_09_28`.

@@ -1,0 +1,18 @@
+protocol_version: 1
+run_version: post_2024_holdout_v1_2026_10_09
+purpose: independent_post_selection_temporal_holdout
+
+source:
+  source_id: qld_crash_locations
+  publisher_modified_at: 2026-04-24
+  resource_url: https://www.data.qld.gov.au/dataset/f3e0ca94-2d7b-44ee-abef-d6b06e9b0729/resource/e88943c0-5968-4972-a15f-38e120d72ec0/download/_1_crash_locations.csv
+  sha256: 975be4b02a235d06589de9b486f73bafe22d0f2007f0c07abb84f54cb926c704
+  preliminary_months: 12
+
+evaluation:
+  reference_fold: rolling_03
+  selected_model: boosted_tree
+  first_test_cutoff: 2024-06-30
+  last_test_cutoff: 2024-12-31
+  label_complete_through: 2025-03-31
+  fixed_budget_fraction: 0.01

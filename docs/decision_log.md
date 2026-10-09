@@ -272,3 +272,21 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
 - **Consequence:** The research demonstration may be reviewed, but no live operational or
   prospective model-performance claim is approved. The drift and geographic reliability signals
   require investigation before a refreshed deployment.
+
+## Post-M7-D025 — Later-quarter label boundary and independent test
+
+- **State:** Accepted for an isolated research validation on 9 October 2026; the approved
+  Milestone 2–6 cutoff and serving bundle remain unchanged.
+- **Decision:** Interpret the publisher's 12-month preliminary-data notice relative to the
+  **24 April 2026 crash-source release**, admitting forecast outcomes from July 2024 through
+  March 2025 but not April–June 2025. Refit the fixed Milestone 5 finalists only on the original
+  `rolling_03` training/calibration rows, and evaluate these later quarters as a separate
+  post-selection temporal holdout.
+- **Evidence:** The pinned source and canonical artifacts pass checksum and reconciliation gates;
+  the rebuilt overlap quarter matches the approved panel. The selected boosted tree captures
+  **7.819%** of eligible serious-crash weight at the top-1% budget, but positive-outcome interval
+  coverage is **0.258%** despite **89.205%** marginal coverage. Regional undercoverage remains.
+- **Consequence:** Record a **no-go for operational use**. The new evidence does not automatically
+  promote the graph-feature tree, approve a data refresh, or change web-demo scores. Revisit
+  uncertainty design and repeat on a separately versioned source release. Full protocol and
+  limitations are in [new_period_validation.md](new_period_validation.md).

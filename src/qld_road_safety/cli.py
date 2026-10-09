@@ -114,6 +114,15 @@ def build_parser() -> argparse.ArgumentParser:
         "smoke-milestone7", help="verify retained Milestone 7 review evidence"
     )
     smoke_milestone7.add_argument("--project-root", default=".")
+
+    validate_new_period = subparsers.add_parser(
+        "validate-new-period", help="test the selected model on complete post-2024 quarters"
+    )
+    validate_new_period.add_argument("--project-root", default=".")
+    smoke_new_period = subparsers.add_parser(
+        "smoke-new-period", help="verify the separate newer-period evidence and checksums"
+    )
+    smoke_new_period.add_argument("--project-root", default=".")
     return parser
 
 
@@ -379,6 +388,40 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         try:
             result = smoke_milestone7(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] == "passed" else 2
+
+    if args.command == "validate-new-period":
+        from qld_road_safety.new_period import run_new_period_validation
+
+        try:
+            result = run_new_period_validation(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(
+            json.dumps(
+                {
+                    "status": result["status"],
+                    "run_version": result["run_version"],
+                    "test_cutoffs": result["test_cutoffs"],
+                    "selected_model": result["selected_model"],
+                    "top_1pct_mean_capture": result["selected_top_1pct_mean_capture"],
+                    "deployment_status": result["deployment_status"],
+                },
+                indent=2,
+            )
+        )
+        return 0
+
+    if args.command == "smoke-new-period":
+        from qld_road_safety.new_period import smoke_new_period_validation
+
+        try:
+            result = smoke_new_period_validation(Path(args.project_root))
         except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
             print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
             return 2
