@@ -77,6 +77,12 @@ present, run `qrs validate-new-period --project-root .` and then
 Git-ignored local directories. See [new_period_validation.md](new_period_validation.md) for the
 source-release cutoff rule, metrics and operational no-go decision.
 
+The follow-on geographic uncertainty study is also isolated from serving. Run
+`qrs evaluate-geographic-uncertainty --project-root .` and then
+`qrs smoke-geographic-uncertainty --project-root .` with the same retained local artifacts.
+Its [public summary](geographic_uncertainty.md) distinguishes marginal intervals from
+positive-conditional bounds; detailed artifacts and reports remain Git-ignored.
+
 The app's metadata displays model, network and serving versions and the historical forecast
 periods. The provenance is: boosted-tree model `robustness_v1_2026_09_27`, network
 `qrt_state_controlled_2026_09_26`, and serving snapshot `decision_app_v1_2026_09_28`.

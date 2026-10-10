@@ -210,3 +210,17 @@ build on a PyPI timeout; the retry-adjusted run passed all Linux, Windows and co
 The annotated tag belongs on the final reviewed commit. A private headless-Edge
 screenshot is retained at `reports/generated/milestone7/historical-demo-clarified.png`; a human
 screen-reader check remains required because the interactive browser-control helper did not start.
+
+## Geographic uncertainty research check
+
+With the retained local Milestone 2, 5 and newer-period artifacts present, run:
+
+```powershell
+.venv\Scripts\python.exe -m qld_road_safety.cli smoke-geographic-uncertainty --project-root .
+```
+
+Expected result: `"status": "passed"`, including prediction reproduction, output checksums
+and the later-period row fingerprint. The detailed local report is at
+`reports/generated/geographic_uncertainty/geographic_uncertainty_v1_2026_10_10/report.md`.
+It should show improved South Coast coverage but poorer Townsville holdout coverage. No change
+should appear in the historical web demo; this is not a serving refresh.

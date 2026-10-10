@@ -93,3 +93,7 @@ investigate positive-outcome interval behavior and regional undercoverage, and t
 validation on a separately versioned source release when one becomes available. The historical
 demo remains on its original approved scores until a reviewed refresh passes the gates in
 [refresh operations](refresh_operations.md).
+
+A subsequent [geographic uncertainty experiment](geographic_uncertainty.md) evaluates region-
+calibrated marginal intervals and a separate positive-conditional bound. It does not revise this
+independent test or its operational no-go decision.

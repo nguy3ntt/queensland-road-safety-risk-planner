@@ -1,0 +1,15 @@
+protocol_version: 1
+run_version: geographic_uncertainty_v1_2026_10_10
+purpose: research_only_geographic_uncertainty_diagnostic
+reference_model: boosted_tree
+reference_fold: rolling_03
+region_column: aadt_region_name
+coverage: 0.90
+minimum_region_rows: 500
+minimum_region_positive_rows: 100
+geographic_holdouts:
+  - geographic_brisbane_city
+  - geographic_gold_coast_city
+  - geographic_sunshine_coast_regional
+  - geographic_townsville_city
+later_period_run_version: post_2024_holdout_v1_2026_10_09

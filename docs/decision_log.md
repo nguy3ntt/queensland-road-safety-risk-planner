@@ -290,3 +290,19 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
   promote the graph-feature tree, approve a data refresh, or change web-demo scores. Revisit
   uncertainty design and repeat on a separately versioned source release. Full protocol and
   limitations are in [new_period_validation.md](new_period_validation.md).
+
+## Post-M7-D026 — Geographic uncertainty remains research-only
+
+- **State:** Experimental on 10 October 2026; no change to approved serving uncertainty.
+- **Decision:** Compare 90% TMR-region residual intervals with the retained road-class intervals,
+  and separately report a positive-outcome upper bound. The latter is conditional on a serious
+  crash being allocated to a segment-quarter, not an unconditional 90% interval. Fit all radii
+  on earlier calibration rows and use support-aware fallbacks.
+- **Evidence:** On the already inspected later-period outcomes, South Coast all-row coverage rises
+  from 79.053% to 89.694%, but North Queensland declines from 90.998% to 89.001% and the
+  Townsville LGA holdout declines from 82.174% to 77.330%. The positive-conditional bound covers
+  90.757% of positive later-period rows but is much wider and does not repair the original
+  marginal-interval interpretation.
+- **Consequence:** Do not replace the served intervals or claim that geographic uncertainty is
+  resolved. Require a separately versioned, genuinely independent future evaluation before any
+  promotion. See [geographic_uncertainty.md](geographic_uncertainty.md).

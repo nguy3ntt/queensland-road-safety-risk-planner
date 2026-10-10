@@ -123,6 +123,15 @@ def build_parser() -> argparse.ArgumentParser:
         "smoke-new-period", help="verify the separate newer-period evidence and checksums"
     )
     smoke_new_period.add_argument("--project-root", default=".")
+    geographic_uncertainty = subparsers.add_parser(
+        "evaluate-geographic-uncertainty",
+        help="compare regional uncertainty on saved geographic and later-period holdouts",
+    )
+    geographic_uncertainty.add_argument("--project-root", default=".")
+    smoke_geographic_uncertainty = subparsers.add_parser(
+        "smoke-geographic-uncertainty", help="verify saved regional uncertainty evidence"
+    )
+    smoke_geographic_uncertainty.add_argument("--project-root", default=".")
     return parser
 
 
@@ -422,6 +431,37 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         try:
             result = smoke_new_period_validation(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] == "passed" else 2
+
+    if args.command == "evaluate-geographic-uncertainty":
+        from qld_road_safety.geographic_uncertainty import run_geographic_uncertainty
+
+        try:
+            result = run_geographic_uncertainty(Path(args.project_root))
+        except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
+            return 2
+        print(
+            json.dumps(
+                {
+                    "status": result["status"],
+                    "run_version": result["run_version"],
+                    "scope": result["scope"],
+                },
+                indent=2,
+            )
+        )
+        return 0
+
+    if args.command == "smoke-geographic-uncertainty":
+        from qld_road_safety.geographic_uncertainty import smoke_geographic_uncertainty
+
+        try:
+            result = smoke_geographic_uncertainty(Path(args.project_root))
         except (ConfigError, OSError, ValueError, KeyError, TypeError) as exc:
             print(json.dumps({"status": "failed", "error": str(exc)}, indent=2))
             return 2

@@ -85,6 +85,8 @@ Models were compared over **three chronological rolling origins** and **four geo
 
 An independent [July 2024–March 2025 temporal holdout](docs/new_period_validation.md) captured **7.819%** at the same top-1% budget with the selected tree. Its overall interval coverage was **89.205%**, but coverage on rows where a serious-crash outcome occurred was only **0.258%**. This is a research result and an **operational no-go**, not a refreshed model or a change to the historical web demo.
 
+A follow-on [geographic uncertainty experiment](docs/geographic_uncertainty.md) improves the later-period South Coast all-row interval coverage from **79.053% to 89.694%** with region calibration, but worsens the Townsville geographic holdout. A separate positive-conditional bound covers **90.757%** of later positive outcomes, at a much larger span; it is not an unconditional interval. Neither experimental measure is served in the demo.
+
 ## Repository and verification
 
 | Location | Purpose |
@@ -103,6 +105,6 @@ Python **3.12** is the tested release reference (3.11–3.13 are supported). For
 .\scripts\verify.ps1
 ```
 
-The verification suite includes **66 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the release-review commit; the container check used synthetic data. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
+The verification suite includes **78 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the release-review commit; the container check used synthetic data. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
 
 The code is MIT-licensed. Source-data attribution and adaptation notices are in [docs/attribution.md](docs/attribution.md). Keep this work in the role it was built for: an auditable research and investigation aid, with human judgment and fresh data checks before any operational use.

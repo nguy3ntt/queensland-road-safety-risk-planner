@@ -131,6 +131,11 @@ Every reason is preserved per segment, and abstained crash weight remains in eva
 denominators. Coverage, calibration, selection and abstention are audited by road class, TMR region,
 left-side LGA and segment-length band.
 
+The later [geographic uncertainty diagnostic](geographic_uncertainty.md) compares region-level
+marginal intervals and positive-outcome-only bounds without changing the selected model or
+serving snapshot. These are distinct estimands; positive-conditional coverage cannot be described
+as unconditional forecast coverage.
+
 ## Interpretation
 
 Allowed language:

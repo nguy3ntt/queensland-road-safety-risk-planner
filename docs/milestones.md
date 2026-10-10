@@ -186,6 +186,10 @@ The first post-Milestone 7 research extension is a separate, completed
 release, preserves the approved web-demo snapshot and records an operational no-go because
 positive-outcome intervals and some regions remain unreliable. It is not a new deployment milestone.
 
+A second, [geographic uncertainty experiment](geographic_uncertainty.md) calibrates separate
+region-level and positive-conditional bounds using earlier periods. It improves some regions but
+worsens the Townsville holdout, so it remains research-only and does not alter the app.
+
 Other possible extensions:
 
 - dynamic graph changes over time;
