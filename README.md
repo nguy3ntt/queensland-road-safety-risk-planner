@@ -42,11 +42,11 @@ The network is a **retrospective 2026 snapshot**; it does not prove that every r
 
 ## Web demo
 
-The browser presents a historical forecast period, a regional map overview, a budgeted shortlist and segment-level evidence. The overview cells show mean predicted serious-crash weight across the chosen period. The investigation budget selects the top eligible segments for the shortlist and exports; **it does not change the overview cells**. Region and road-class filters likewise affect the shortlist, exports and inspectable road-segment sample, while the overview remains a fixed precomputed layer. The map limits the number of detailed segments in broad views, so a sparse display must not be read as complete coverage or low risk.
+The browser presents a historical forecast period, a regional map overview, a budgeted shortlist and segment-level evidence. Warm overview cells show mean predicted serious-crash weight across the chosen period and stay fixed when the budget changes. **Blue road segments show the budget-selected shortlist on the map**; changing the budget updates both the shortlist and that overlay. Region and road-class filters apply to the shortlist, exports and segment layers, while the fixed overview stays statewide. All selected roads in the current map view are shown, even if the separate background road-detail sample is capped. Roads outside the current view are counted but not drawn until you pan or zoom there.
 
 ![Local web demo showing the historical forecast, map, filters and investigation shortlist](docs/assets/demo-overview.png)
 
-*Historical local decision view. The latest forecast covers April–June 2024, not current road conditions. Derived from Queensland Government open data; see [attribution](docs/attribution.md).*
+*Historical local decision view. Blue roads are the budget-selected shortlist; warm cells remain the fixed risk overview. The latest forecast covers April–June 2024, not current road conditions. Derived from Queensland Government open data; see [attribution](docs/attribution.md).*
 
 A segment detail brings together expected serious-crash weight, occurrence probability, prediction interval, traffic exposure and reference year, geometry status and uncertainty diagnostics. Abstained segments are withheld from rankings but remain accounted for in coverage figures and map cells. Analysts can export the selected segments as GeoJSON or GeoParquet for further review.
 
@@ -105,6 +105,6 @@ Python **3.12** is the tested release reference (3.11–3.13 are supported). For
 .\scripts\verify.ps1
 ```
 
-The verification suite includes **78 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the release-review commit; the container check used synthetic data. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
+The verification suite includes **79 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the release-review commit; the container check used synthetic data. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
 
 The code is MIT-licensed. Source-data attribution and adaptation notices are in [docs/attribution.md](docs/attribution.md). Keep this work in the role it was built for: an auditable research and investigation aid, with human judgment and fresh data checks before any operational use.

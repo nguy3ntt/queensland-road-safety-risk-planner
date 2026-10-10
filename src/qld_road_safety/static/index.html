@@ -36,10 +36,11 @@
     <section class="layout">
       <div class="panel">
         <div class="section-heading"><h2>Map overview</h2><div><button id="zoom-in" type="button" aria-label="Zoom in">+</button> <button id="zoom-out" type="button" aria-label="Zoom out">−</button> <button id="reset-map" type="button">Reset map</button></div></div>
-        <p>Colour shows mean predicted serious-crash weight in precomputed cells for the chosen period. These overview cells do not change with the investigation budget or region and road-class filters; those controls change the shortlist and exports. Zoom in to inspect individual road segments; a bounded sample is shown for busy views.</p>
-        <canvas id="map" width="900" height="650" tabindex="0" role="img" aria-label="Interactive Queensland road risk map. Use arrow keys to pan and plus or minus to zoom."></canvas>
+        <p>Warm cells show mean predicted serious-crash weight for the chosen period and stay fixed when the budget or filters change. Blue roads show the complete budget-selected shortlist within the current map view; the shortlist and exports use the same selection. Other road detail is a bounded sample in busy views.</p>
+        <canvas id="map" width="900" height="650" tabindex="0" role="img" aria-label="Interactive Queensland road risk map with blue budget-selected road segments. Use arrow keys to pan and plus or minus to zoom."></canvas>
+        <p id="map-budget-note" class="map-budget-note" role="status" aria-live="polite">Loading budget-selected roads…</p>
         <p id="map-status" role="status" aria-live="polite"></p>
-        <p class="legend"><span class="swatch low"></span> Lower expected weight <span class="swatch high"></span> Higher expected weight <span class="swatch withheld"></span> Withheld by uncertainty rule</p>
+        <p class="legend"><span class="swatch low"></span> Lower expected weight <span class="swatch high"></span> Higher expected weight <span class="swatch selected-road"></span> Budget-selected road <span class="swatch withheld"></span> Withheld by uncertainty rule</p>
       </div>
       <div class="panel">
         <h2>Budgeted shortlist</h2>
@@ -53,7 +54,7 @@
     </section>
     <section class="panel">
       <h2>How to read this view</h2>
-      <p>Expected weight is the model's forecast of future serious-crash burden for one quarter. The interval shows uncertainty. Abstained segments are withheld from the shortlist but remain visible in coverage counts and the map. The ranking is for investigation, not an instruction to treat a road.</p>
+      <p>Expected weight is the model's forecast of future serious-crash burden for one quarter. The interval shows uncertainty. Abstained segments are withheld from the shortlist and blue map overlay, but remain in coverage counts and the overview layer. The ranking is for investigation, not an instruction to treat a road.</p>
       <p id="provenance"></p>
       <ul id="limitations"></ul>
     </section>

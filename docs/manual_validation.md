@@ -183,8 +183,12 @@ all three artifact checksums, exact score identity, outcome exclusion and run ve
 app, choose the April–June 2024 forecast, set a budget of 5 and update. Five eligible rows
 should appear; the coverage count should report 95 withheld segments statewide. Open the
 first row and confirm its expected weight, interval, exposure tier and quality details are
-visible. Zoom the map to see individual segments, then download both formats. The map may
-report that a broad view is truncated; zoom in rather than treating the subset as complete.
+visible. The map should highlight the same five shortlisted roads in blue. Change the budget
+to 20 and update: the shortlist, blue overlay and map budget count should change to 20 while
+the warm overview cells remain fixed. Pan or zoom: the in-view blue count may change, but the
+shortlist remains the same. Apply a region or class filter and confirm the blue roads still
+match the filtered shortlist. Download both formats. Other background road detail may be
+truncated in a broad view; the selected overlay is not truncated by that sample limit.
 
 The warning must continue to say that the view is historical and non-causal. Tab through
 the controls and shortlist, and use arrow and plus/minus keys on the focused map. These are

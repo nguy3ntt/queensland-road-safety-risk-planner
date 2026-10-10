@@ -143,6 +143,68 @@ def test_detail_map_and_bounded_precomputed_layer(client: TestClient) -> None:
     assert client.get("/api/v1/map/segments", params={**params, "bbox": "bad"}).status_code == 422
 
 
+def test_budget_map_layer_matches_shortlist_even_when_road_sample_is_capped(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    store = _fake_store()
+    extra = store.scores.iloc[0].copy()
+    extra["segment_id"] = "C"
+    extra["road_name"] = "Road C"
+    extra["aadt_region_name"] = "Other region"
+    extra["predicted_weight"] = 0.9
+    extra["statewide_rank"] = 1
+    store.scores = pd.concat([store.scores, extra.to_frame().T], ignore_index=True)
+    extra_geo = gpd.GeoDataFrame(
+        {
+            "segment_id": ["C"],
+            "minx": [150.4],
+            "miny": [-27.3],
+            "maxx": [150.5],
+            "maxy": [-27.2],
+        },
+        geometry=[LineString([(150.4, -27.3), (150.5, -27.2)])],
+        crs="EPSG:4326",
+    )
+    store.geometries = gpd.GeoDataFrame(
+        pd.concat([store.geometries.reset_index(), extra_geo], ignore_index=True),
+        geometry="geometry",
+        crs="EPSG:4326",
+    ).set_index("segment_id")
+    monkeypatch.setattr(api, "ScoreStore", lambda _: store)
+    client = TestClient(api.create_app("."))
+    common = {"cutoff": "2024-03-31", "bbox": "149,-28,151,-26"}
+
+    selected_one = client.get("/api/v1/map/selected", params={**common, "budget": 1}).json()
+    selected_two = client.get("/api/v1/map/selected", params={**common, "budget": 2}).json()
+    ranking_two = client.get(
+        "/api/v1/rankings", params={"cutoff": common["cutoff"], "budget": 2}
+    ).json()
+    ordinary = client.get("/api/v1/map/segments", params={**common, "limit": 1}).json()
+
+    assert [feature["id"] for feature in selected_one["features"]] == ["C"]
+    assert (
+        [feature["id"] for feature in selected_two["features"]]
+        == [item["segment_id"] for item in ranking_two["items"]]
+        == ["C", "A"]
+    )
+    assert (selected_two["selected_rows"], selected_two["visible_rows"]) == (2, 2)
+    assert ordinary["truncated"] is True and len(ordinary["features"]) == 1
+    assert all("observed" not in feature["properties"] for feature in selected_two["features"])
+
+    nearby = client.get(
+        "/api/v1/map/selected",
+        params={**common, "budget": 2, "bbox": "149,-28,150.2,-26"},
+    ).json()
+    assert nearby["selected_rows"] == 2
+    assert [feature["id"] for feature in nearby["features"]] == ["A"]
+    filtered = client.get(
+        "/api/v1/map/selected", params={**common, "budget": 2, "region": "Other region"}
+    ).json()
+    assert [feature["id"] for feature in filtered["features"]] == ["C"]
+    assert client.get("/api/v1/map/selected", params={**common, "budget": 0}).status_code == 422
+    assert client.get("/api/v1/map/selected", params={**common, "bbox": "bad"}).status_code == 422
+
+
 def test_exports_contain_selected_eligible_segments_only(client: TestClient) -> None:
     params = {"cutoff": "2024-03-31", "budget": 2}
     geojson = client.get("/api/v1/export", params={**params, "format": "geojson"})
@@ -172,10 +234,14 @@ def test_interface_has_accessible_fallback_and_clear_limits(client: TestClient) 
         "Not live safety advice",
         "crashes prevented",
         "Budgeted shortlist",
-        "These overview cells do not change with the investigation budget",
+        "stay fixed when the budget or filters change",
+        "Blue roads show the complete budget-selected shortlist",
+        'id="map-budget-note"',
     ):
         assert marker in html.text
-    assert client.get("/static/app.js").status_code == 200
+    script = client.get("/static/app.js")
+    assert script.status_code == 200
+    assert "/api/v1/map/selected" in script.text
     assert client.get("/static/app.css").status_code == 200
     assert client.get("/static/attribution.html").status_code == 200
     assert "Data attribution and licence" in html.text

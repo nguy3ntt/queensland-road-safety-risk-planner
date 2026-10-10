@@ -14,7 +14,7 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
-from shapely.geometry import mapping
+from shapely.geometry import box, mapping
 
 from qld_road_safety.acquisition import sha256_file
 from qld_road_safety.config import load_config
@@ -319,6 +319,50 @@ def create_app(project_root: str | Path) -> FastAPI:
             "features": features,
             "total": total,
             "truncated": total > limit,
+        }
+
+    @app.get("/api/v1/map/selected")
+    def map_selected(
+        cutoff: str,
+        bbox: str,
+        budget: int = Query(default=100, ge=1, le=max_budget),
+        region: str | None = None,
+        road_class: str | None = None,
+    ) -> dict[str, Any]:
+        """Return every budget-selected road intersecting the view, without sample truncation."""
+
+        west, south, east, north = _bbox(bbox, store.summary["bounds_wgs84"])
+        _, selected = store.ranking(cutoff, budget, region, road_class)
+        geo = store.geometries
+        visible_geometry = geo.loc[
+            geo["maxx"].ge(west)
+            & geo["minx"].le(east)
+            & geo["maxy"].ge(south)
+            & geo["miny"].le(north)
+        ]
+        visible_geometry = visible_geometry.loc[
+            visible_geometry.geometry.intersects(box(west, south, east, north))
+        ]
+        visible = selected.loc[selected["segment_id"].isin(visible_geometry.index)]
+        return {
+            "type": "FeatureCollection",
+            "budget": budget,
+            "selected_rows": len(selected),
+            "visible_rows": len(visible),
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": row["segment_id"],
+                    "geometry": mapping(visible_geometry.loc[row["segment_id"]].geometry),
+                    "properties": {
+                        "segment_id": row["segment_id"],
+                        "road_name": _value(row["road_name"]),
+                        "predicted_weight": _value(row["predicted_weight"]),
+                        "statewide_rank": _value(row["statewide_rank"]),
+                    },
+                }
+                for _, row in visible.iterrows()
+            ],
         }
 
     @app.get("/api/v1/export")

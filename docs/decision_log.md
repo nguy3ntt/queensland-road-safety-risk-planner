@@ -306,3 +306,15 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
 - **Consequence:** Do not replace the served intervals or claim that geographic uncertainty is
   resolved. Require a separately versioned, genuinely independent future evaluation before any
   promotion. See [geographic_uncertainty.md](geographic_uncertainty.md).
+
+## Post-M7-D027 — Budget-selected roads on the historical map
+
+- **State:** Accepted as a presentation-only improvement to the local demonstration.
+- **Decision:** Draw every budget-selected road intersecting the map view as a distinct blue
+  overlay, using the same scoped ranking as the shortlist and exports. Keep the precomputed
+  risk-overview cells fixed and retain the existing cap only for other road detail.
+- **Reason:** A changing shortlist with an unchanged map was easy to misread as a budget control
+  that had no effect. The overlay communicates selection without implying that risk values,
+  forecast periods, uncertainty or geography changed.
+- **Consequence:** Show selected and in-view counts, preserve abstention and filter behavior,
+  and do not alter the approved score snapshot or scientific evaluation.
