@@ -87,7 +87,8 @@ class ScoreStore:
         if synthetic and os.environ.get("QRS_ALLOW_SYNTHETIC_FIXTURE") != "1":
             raise ValueError("Synthetic CI fixture requires an explicit test-only opt-in")
         expected_mode = "synthetic_ci_fixture" if synthetic else "historical_holdout_demonstration"
-        if summary["model_name"] != "boosted_tree" or summary["mode"] != expected_mode:
+        expected_model = "synthetic_example" if synthetic else "boosted_tree"
+        if summary["model_name"] != expected_model or summary["mode"] != expected_mode:
             raise ValueError("Serving artifacts are not the approved historical model")
         expected_files = {"scores.parquet", "road_geometry.parquet", "map_cells.parquet"}
         if len(manifest) != 3 or {Path(item["path"]).name for item in manifest} != expected_files:
@@ -175,7 +176,7 @@ def create_app(project_root: str | Path) -> FastAPI:
         return {
             "mode": store.summary["mode"],
             "notice": (
-                "Synthetic CI test data only; no real crash-risk values."
+                "Synthetic demonstration data only; no real roads, model, or crash-risk values."
                 if store.summary.get("synthetic_fixture")
                 else "Historical held-out forecasts for analyst investigation only; not live risk."
             ),
@@ -195,10 +196,15 @@ def create_app(project_root: str | Path) -> FastAPI:
             "maximum_export_rows": max_export,
             "limitations": store.summary["limitations"],
             "metric_note": (
-                "Expected serious-crash weight over the forecast quarter; not crashes prevented."
+                "Fictional example weight; not a model forecast or crashes prevented."
+                if store.summary.get("synthetic_fixture")
+                else "Expected serious-crash weight over the forecast quarter; "
+                "not crashes prevented."
             ),
             "interval_note": (
-                "Calibrated prediction interval for future serious-crash weight; "
+                "Invented example interval, not calibrated; example abstentions are withheld."
+                if store.summary.get("synthetic_fixture")
+                else "Calibrated prediction interval for future serious-crash weight; "
                 "abstentions are withheld from ranking."
             ),
         }
@@ -256,7 +262,10 @@ def create_app(project_root: str | Path) -> FastAPI:
                 "diagnostic_wide_interval": _value(row["diagnostic_wide_interval"]),
             },
             "interpretation": (
-                "Association-based forecast for investigation prioritisation, "
+                "Fictional values for interface demonstration only; "
+                "no real forecast or treatment effect."
+                if store.summary.get("synthetic_fixture")
+                else "Association-based forecast for investigation prioritisation, "
                 "not a treatment effect."
             ),
         }
@@ -374,7 +383,24 @@ def create_app(project_root: str | Path) -> FastAPI:
         road_class: str | None = None,
     ) -> Response:
         _, selected = store.ranking(cutoff, budget, region, road_class)
-        filename = f"qrs-historical-{cutoff}-top-{budget}"
+        synthetic = store.summary.get("synthetic_fixture") is True
+        filename = f"qrs-{'synthetic' if synthetic else 'historical'}-{cutoff}-top-{budget}"
+        attribution = (
+            "Project-generated fictional example; no Queensland source records"
+            if synthetic
+            else "Queensland Government open data; see /static/attribution.html"
+        )
+        licence_url = None if synthetic else "https://creativecommons.org/licenses/by/4.0/"
+        source_urls = (
+            []
+            if synthetic
+            else [
+                "https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads",
+                "https://www.data.qld.gov.au/dataset/road-location-and-traffic-data",
+                "https://www.data.qld.gov.au/dataset/traffic-census-for-the-queensland-state-declared-road-network",
+                "https://www.data.qld.gov.au/dataset/queensland-roads-and-tracks",
+            ]
+        )
         if format == "geojson":
             features = [
                 {
@@ -390,17 +416,10 @@ def create_app(project_root: str | Path) -> FastAPI:
                     "type": "FeatureCollection",
                     "name": filename,
                     "mode": store.summary["mode"],
-                    "source_data_attribution": (
-                        "Queensland Government open data; see /static/attribution.html"
-                    ),
-                    "source_data_license_url": "https://creativecommons.org/licenses/by/4.0/",
-                    "source_data_modified": True,
-                    "source_data_sources": [
-                        "https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads",
-                        "https://www.data.qld.gov.au/dataset/road-location-and-traffic-data",
-                        "https://www.data.qld.gov.au/dataset/traffic-census-for-the-queensland-state-declared-road-network",
-                        "https://www.data.qld.gov.au/dataset/queensland-roads-and-tracks",
-                    ],
+                    "source_data_attribution": attribution,
+                    "source_data_license_url": licence_url,
+                    "source_data_modified": not synthetic,
+                    "source_data_sources": source_urls,
                     "features": features,
                 },
                 allow_nan=False,
@@ -411,16 +430,10 @@ def create_app(project_root: str | Path) -> FastAPI:
                 headers={"Content-Disposition": f'attachment; filename="{filename}.geojson"'},
             )
         export_rows = selected.loc[:, list(PUBLIC_FIELDS)].copy()
-        export_rows["source_data_attribution"] = "Queensland Government open data"
-        export_rows["source_data_license_url"] = "https://creativecommons.org/licenses/by/4.0/"
-        export_rows["source_data_modified"] = True
-        export_rows["source_data_sources"] = (
-            "https://www.data.qld.gov.au/dataset/crash-data-from-queensland-roads; "
-            "https://www.data.qld.gov.au/dataset/road-location-and-traffic-data; "
-            "https://www.data.qld.gov.au/dataset/"
-            "traffic-census-for-the-queensland-state-declared-road-network; "
-            "https://www.data.qld.gov.au/dataset/queensland-roads-and-tracks"
-        )
+        export_rows["source_data_attribution"] = attribution
+        export_rows["source_data_license_url"] = licence_url
+        export_rows["source_data_modified"] = not synthetic
+        export_rows["source_data_sources"] = "; ".join(source_urls)
         geometry = gpd.GeoSeries(
             [store.geometries.loc[segment_id].geometry for segment_id in selected["segment_id"]],
             crs="EPSG:4326",

@@ -10,13 +10,13 @@
 <body>
   <a class="skip" href="#main">Skip to main content</a>
   <header class="masthead">
-    <div><p class="eyebrow">Analyst decision support · Historical demonstration</p>
+    <div><p id="demo-mode" class="eyebrow">Loading demonstration mode…</p>
       <h1>Queensland road-safety investigation planner</h1>
-      <p>Explore evaluated future-quarter forecasts and choose locations for human investigation.</p>
+      <p id="demo-intro">Explore the map, budgeted shortlist and segment details.</p>
     </div>
   </header>
   <main id="main">
-    <div class="warning" role="note"><strong>Not live safety advice.</strong> These are historical held-out forecasts on a retrospective road snapshot. Scores are associations, not treatment effects or estimates of crashes prevented.</div>
+    <div class="warning" role="note"><strong>Not live safety advice or an estimate of crashes prevented.</strong> <span id="demo-warning">Loading data status…</span></div>
     <section class="controls" aria-labelledby="controls-title">
       <h2 id="controls-title">Investigation controls</h2>
       <div class="control-grid">
@@ -54,12 +54,12 @@
     </section>
     <section class="panel">
       <h2>How to read this view</h2>
-      <p>Expected weight is the model's forecast of future serious-crash burden for one quarter. The interval shows uncertainty. Abstained segments are withheld from the shortlist and blue map overlay, but remain in coverage counts and the overview layer. The ranking is for investigation, not an instruction to treat a road.</p>
+      <p id="metric-explanation">Loading metric interpretation…</p>
       <p id="provenance"></p>
       <ul id="limitations"></ul>
     </section>
   </main>
   <footer>Queensland Road Safety Risk Planner · research demonstration ·
-    <a href="/static/attribution.html">Data attribution and licence</a></footer>
+    <a href="/static/attribution.html">Data attribution and licence (historical bundle)</a></footer>
 </body>
 </html>

@@ -318,3 +318,16 @@ decision gate produces evidence. Implementation convenience is not sufficient ev
   forecast periods, uncertainty or geography changed.
 - **Consequence:** Show selected and in-view counts, preserve abstention and filter behavior,
   and do not alter the approved score snapshot or scientific evaluation.
+
+## Post-M7-D028 — Publicly reproducible interface walkthrough
+
+- **State:** Accepted as a synthetic interface demonstration, separate from the approved
+  historical research bundle.
+- **Decision:** Generate a small deterministic fictional serving bundle in temporary local
+  storage and serve it only on loopback with the existing explicit synthetic opt-in. Clearly
+  identify synthetic mode in the page, API and exports. Do not publish the real source snapshots,
+  trained models or historical scoring artifacts for convenience.
+- **Reason:** A clean clone previously could verify code but could not open any interactive demo.
+  The existing two-road CI fixture was too small to demonstrate budgets, periods and filters.
+- **Consequence:** Public users can reproduce UI behavior without data access, but cannot infer
+  actual Queensland risk, scientific performance or source-data provenance from fictional values.

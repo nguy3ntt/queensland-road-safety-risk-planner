@@ -107,15 +107,82 @@ def test_synthetic_ci_bundle_is_explicitly_guarded(
     monkeypatch.setenv("QRS_ALLOW_SYNTHETIC_FIXTURE", "1")
     client = TestClient(create_app(fixture_root))
     assert client.get("/health").json()["mode"] == "synthetic_ci_fixture"
-    assert "Synthetic CI test data only" in client.get("/api/v1/meta").json()["notice"]
+    metadata = client.get("/api/v1/meta").json()
+    assert "Synthetic demonstration data only" in metadata["notice"]
+    assert metadata["model_name"] == "synthetic_example"
+    assert metadata["default_budget"] == 5
     ranking = client.get("/api/v1/rankings", params={"cutoff": "2024-03-31", "budget": 2}).json()
-    assert [item["segment_id"] for item in ranking["items"]] == ["SYNTHETIC-A"]
+    assert [item["segment_id"] for item in ranking["items"]] == ["SYNTHETIC-A", "SYNTHETIC-C"]
+    assert ranking["population_rows"] == 16
+    assert ranking["withheld_rows"] == 2
+    map_layer = client.get(
+        "/api/v1/map/selected",
+        params={"cutoff": "2024-03-31", "budget": 5, "bbox": "149.65,-27.75,150.85,-26.65"},
+    ).json()
+    assert map_layer["visible_rows"] == 5
+    assert [feature["id"] for feature in map_layer["features"]] == [
+        item["segment_id"]
+        for item in client.get(
+            "/api/v1/rankings", params={"cutoff": "2024-03-31", "budget": 5}
+        ).json()["items"]
+    ]
+    filtered = client.get(
+        "/api/v1/rankings",
+        params={"cutoff": "2024-03-31", "budget": 3, "region": "Example Inland"},
+    ).json()
+    assert filtered["selected_rows"] == 3
+    assert all(item["aadt_region_name"] == "Example Inland" for item in filtered["items"])
+    for size in metadata["grid_sizes_degrees"]:
+        assert (
+            client.get(
+                "/api/v1/map/cells", params={"cutoff": "2024-03-31", "grid_size": size}
+            ).json()["total_cells"]
+            > 0
+        )
+    exported = client.get("/api/v1/export", params={"cutoff": "2024-03-31", "budget": 2}).json()
+    assert exported["name"].startswith("qrs-synthetic-")
+    assert exported["source_data_sources"] == []
+    assert exported["source_data_license_url"] is None
+    assert exported["source_data_modified"] is False
+    assert "fictional" in exported["source_data_attribution"]
+    assert 'id="demo-warning"' in client.get("/").text
+    assert (
+        "All roads, traffic values, scores and intervals here are fictional"
+        in client.get("/static/app.js").text
+    )
+    assert (
+        "Fictional values"
+        in client.get("/api/v1/segments/SYNTHETIC-A", params={"cutoff": "2024-03-31"}).json()[
+            "interpretation"
+        ]
+    )
     manifest_path = fixture_root / "reports" / "generated" / "milestone6" / "artifact_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest[0]["path"] = "reports/generated/milestone6/" + Path(manifest[0]["path"]).name
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(ValueError, match="paths do not match"):
         ScoreStore(fixture_root)
+
+
+def test_public_demo_fixture_is_deterministic_and_refuses_overwrite(tmp_path: Path) -> None:
+    from scripts.make_ci_bundle import make_bundle
+
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    make_bundle(first)
+    make_bundle(second)
+    relative = Path("reports/generated/milestone6/artifact_manifest.json")
+    assert json.loads((first / relative).read_text(encoding="utf-8")) == json.loads(
+        (second / relative).read_text(encoding="utf-8")
+    )
+    summary = json.loads(
+        (first / "reports/generated/milestone6/summary.json").read_text(encoding="utf-8")
+    )
+    assert summary["prediction_rows"] == 32
+    assert len(summary["periods"]) == 2
+    assert list(first.rglob("*.parquet"))
+    with pytest.raises(ValueError, match="new or empty"):
+        make_bundle(first)
 
 
 def test_saved_audit_when_local_artifacts_exist() -> None:

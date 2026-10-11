@@ -208,7 +208,7 @@ async function update() {
     if (!Number.isInteger(next.budget) || next.budget < 1 || next.budget > state.meta.maximum_budget) {
       throw new Error(`Budget must be 1–${state.meta.maximum_budget}`);
     }
-    status("Loading historical rankings and map…");
+    status("Loading rankings and map…");
     const result = await api("/api/v1/rankings?" + viewParams(next));
     if (request !== state.updateRequest) return;
     state.view = next;
@@ -225,7 +225,9 @@ async function update() {
       `Cutoff ${result.cutoff_date}; forecast period ${result.forecast_start} to ${result.forecast_end}.`;
     await mapLoad();
     if (request === state.updateRequest) {
-      status("Historical decision view ready. Scores are not current forecasts.");
+      status(state.meta.mode === "synthetic_ci_fixture"
+        ? "Synthetic example ready. These are invented values, not risk forecasts."
+        : "Historical decision view ready. Scores are not current forecasts.");
     }
   } catch (error) {
     if (request === state.updateRequest) status(error.message, true);
@@ -361,6 +363,19 @@ function mapInteractions() {
 async function start() {
   try {
     state.meta = await api("/api/v1/meta");
+    const synthetic = state.meta.mode === "synthetic_ci_fixture";
+    $("demo-mode").textContent = synthetic
+      ? "Fictional data · Interface demonstration"
+      : "Analyst decision support · Historical demonstration";
+    $("demo-intro").textContent = synthetic
+      ? "Try the controls with invented roads and scores. No real crash-risk result is shown."
+      : "Explore evaluated future-quarter forecasts and choose locations for human investigation.";
+    $("demo-warning").textContent = synthetic
+      ? "All roads, traffic values, scores and intervals here are fictional. No trained model or Queensland source record is loaded; do not interpret this map as real risk."
+      : "These are historical held-out forecasts on a retrospective road snapshot. Scores are associations, not treatment effects or estimates of crashes prevented.";
+    $("metric-explanation").textContent = synthetic
+      ? "The numbers and intervals are invented to demonstrate selection, filters, abstention, map interaction and export. They have no statistical calibration or road-safety meaning."
+      : "Expected weight forecasts future reported serious-crash burden for one quarter. The interval shows uncertainty. Abstained segments are withheld from the shortlist and blue map overlay, but remain in coverage counts and the overview layer. The ranking supports investigation, not an instruction to treat a road.";
     state.bounds = [...state.meta.bounds_wgs84];
     $("budget").max = state.meta.maximum_budget;
     $("budget").value = state.meta.default_budget;

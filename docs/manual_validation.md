@@ -172,6 +172,13 @@ old raw bytes when that happens.
 
 ## Quick Milestone 6 app check
 
+For a fresh checkout with no research artifacts, run `scripts\bootstrap.ps1` and then
+`scripts\serve_public_demo.ps1`. The page must prominently say that all roads, scores and
+intervals are fictional. Budgets 5 and 10 should change both shortlist and blue map layer;
+period and region filters, detail and exports should work. An exported GeoJSON must identify
+the synthetic mode and contain no Queensland source-data attribution. Stop with Ctrl+C; this
+test says nothing about scientific model performance.
+
 After the approved Milestone 5 predictions exist locally:
 
     .venv\Scripts\python.exe -m qld_road_safety.cli build-milestone6 --project-root .

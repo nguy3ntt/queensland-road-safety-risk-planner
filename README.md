@@ -46,7 +46,7 @@ The browser presents a historical forecast period, a regional map overview, a bu
 
 ![Local web demo showing the historical forecast, map, filters and investigation shortlist](docs/assets/demo-overview.png)
 
-*Historical local decision view. Blue roads are the budget-selected shortlist; warm cells remain the fixed risk overview. The latest forecast covers April–June 2024, not current road conditions. Derived from Queensland Government open data; see [attribution](docs/attribution.md).*
+*Historical local decision view (not the public synthetic walkthrough). Blue roads are the budget-selected shortlist; warm cells remain the fixed risk overview. The latest forecast covers April–June 2024, not current road conditions. Derived from Queensland Government open data; see [attribution](docs/attribution.md).*
 
 A segment detail brings together expected serious-crash weight, occurrence probability, prediction interval, traffic exposure and reference year, geometry status and uncertainty diagnostics. Abstained segments are withheld from rankings but remain accounted for in coverage figures and map cells. Analysts can export the selected segments as GeoJSON or GeoParquet for further review.
 
@@ -56,7 +56,16 @@ A segment detail brings together expected serious-crash weight, occurrence proba
 
 ## Run locally
 
-On Windows PowerShell, with the approved local Milestone 6 scoring bundle already present:
+For a fresh clone, the public walkthrough needs no Queensland source files, trained model or saved scoring bundle. On Windows PowerShell:
+
+```powershell
+.\scripts\bootstrap.ps1
+.\scripts\serve_public_demo.ps1
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) while the server terminal remains open; press Ctrl+C to stop. The app clearly labels this mode as **synthetic**. Its 16 fictional roads, two example periods, scores, traffic values and intervals demonstrate the controls and exports only. They are not forecasts, model-performance evidence or actual Queensland roads. Try budgets of 5 and 10 to see the blue map selection and shortlist change together. On macOS/Linux after installing `.[app]`, run `python scripts/serve_public_demo.py`.
+
+For the separate **real historical research demo** on Windows, with the approved local Milestone 6 scoring bundle already present:
 
 ```powershell
 .\scripts\bootstrap.ps1
@@ -64,7 +73,7 @@ On Windows PowerShell, with the approved local Milestone 6 scoring bundle alread
 .\scripts\serve_milestone6.ps1
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000) while the server terminal remains open. The address is local to the computer running the service. A fresh Git clone contains the code and documentation but **not** the raw data, processed panel, trained weights or real-data serving bundle, so it cannot display the historical Queensland map on its own. See [reproducibility](docs/reproducibility.md) for rebuild and startup requirements.
+The address is local to the computer running the service. A fresh Git clone contains the code and documentation but **not** the raw data, processed panel, trained weights or real-data serving bundle, so it cannot display the historical Queensland map on its own. The public synthetic walkthrough does not reproduce the scientific results. See [reproducibility](docs/reproducibility.md) for the exact boundary, rebuild and startup requirements.
 
 ## Data sources
 
@@ -105,6 +114,6 @@ Python **3.12** is the tested release reference (3.11–3.13 are supported). For
 .\scripts\verify.ps1
 ```
 
-The verification suite includes **79 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the release-review commit; the container check used synthetic data. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
+The verification suite includes **80 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the release-review commit; the container check used synthetic data. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
 
 The code is MIT-licensed. Source-data attribution and adaptation notices are in [docs/attribution.md](docs/attribution.md). Keep this work in the role it was built for: an auditable research and investigation aid, with human judgment and fresh data checks before any operational use.

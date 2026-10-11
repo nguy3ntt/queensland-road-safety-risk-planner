@@ -3,8 +3,9 @@
 ## Scope and prerequisites
 
 This repository is code and public protocol, **not** a distributable copy of Queensland source
-data or trained artifacts. The final app runs only when the previously approved, checksummed
-Milestone 6 serving bundle is present. It is a historical demonstration for analyst exploration.
+data or trained artifacts. A fresh clone can run a synthetic interface walkthrough; the real
+historical app runs only when the previously approved, checksummed Milestone 6 serving bundle is
+present. Neither route is a live safety service.
 
 - Python 3.12 is the CI/container reference; the project supports 3.11–3.13.
 - Install the package with all extras for development; important fitted model and dependency
@@ -17,7 +18,19 @@ Milestone 6 serving bundle is present. It is a historical demonstration for anal
 ## Python startup
 
 On Windows, run `./scripts/bootstrap.ps1` from the repository root. This creates `.venv`, installs
-all extras and runs configuration, provenance, test, lint, formatting and type checks. Then run:
+all extras and runs configuration, provenance, test, lint, formatting and type checks. To explore
+the interface **without private data**, run:
+
+    .\scripts\serve_public_demo.ps1
+
+This creates a temporary, checksum-verified fictional bundle, opts in to the synthetic guard for
+this process only, serves on `127.0.0.1:8000`, and removes the bundle when stopped. It does not
+read or replace local real-data artifacts. Use budgets 5 and 10, switch the two example periods,
+filter by Example Coast/Inland, open a segment and export. All values are invented; the intervals
+are not calibrated and the generator does not train a model. On Unix-like systems, after the
+Python install below, run `python scripts/serve_public_demo.py`.
+
+For the separate **approved historical** local bundle, run:
 
     .\scripts\smoke_milestone6.ps1
     .\scripts\audit_milestone7.ps1
@@ -91,7 +104,8 @@ Attribution and adaptation notes are in [attribution.md](attribution.md).
 ## Known non-reproducible boundaries
 
 - The 2026 source snapshots are local and omitted from Git; a clean checkout alone cannot
-  regenerate the complete analysis or run the app.
+  regenerate the complete analysis or run the historical app. The public synthetic walkthrough
+  reproduces UI behavior only, not the published scientific results.
 - Published source pages and schemas may change. The exact local raw checksums and response-page
   inventory, not mutable links, define the historical data snapshot.
 - Dependency ranges are bounded rather than a cross-platform lockfile. CI and local reports record

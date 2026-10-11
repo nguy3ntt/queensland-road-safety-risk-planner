@@ -25,11 +25,11 @@ def smoke(base_url: str) -> None:
         raise RuntimeError("Container did not become healthy") from last_error
     with urlopen(base_url + "/api/v1/meta", timeout=5) as response:
         meta = json.load(response)
-    if "Synthetic CI test data only" not in meta["notice"]:
+    if "Synthetic demonstration data only" not in meta["notice"]:
         raise ValueError("Synthetic test warning is missing")
     with urlopen(base_url + "/api/v1/rankings?cutoff=2024-03-31&budget=2", timeout=5) as response:
         rankings = json.load(response)
-    if [item["segment_id"] for item in rankings["items"]] != ["SYNTHETIC-A"]:
+    if [item["segment_id"] for item in rankings["items"]] != ["SYNTHETIC-A", "SYNTHETIC-C"]:
         raise ValueError("Synthetic ranking or abstention check failed")
 
 
