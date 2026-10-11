@@ -62,5 +62,6 @@ reports/milestone_[0-9]*
 # Local scratch and temporary exports
 scratch/
 tmp/
+outputs/
 *.tmp
 *.bak

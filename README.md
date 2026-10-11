@@ -114,6 +114,6 @@ Python **3.12** is the tested release reference (3.11–3.13 are supported). For
 .\scripts\verify.ps1
 ```
 
-The verification suite includes **80 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the release-review commit; the container check used synthetic data. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
+The verification suite includes **82 automated tests**, linting and type checks. Linux, Windows and container CI checks passed on the last pushed commit; the container check used synthetic data. The current release-review edits still need post-commit CI. Local Docker Compose runtime, a human screen-reader review and an optional owner-created release tag remain on the [release checklist](docs/release_checklist.md). There is no scheduled data refresh or automatic model promotion; the [refresh operations](docs/refresh_operations.md) document is a governed design only.
 
 The code is MIT-licensed. Source-data attribution and adaptation notices are in [docs/attribution.md](docs/attribution.md). Keep this work in the role it was built for: an auditable research and investigation aid, with human judgment and fresh data checks before any operational use.

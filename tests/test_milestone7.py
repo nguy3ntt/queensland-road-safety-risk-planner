@@ -185,6 +185,34 @@ def test_public_demo_fixture_is_deterministic_and_refuses_overwrite(tmp_path: Pa
         make_bundle(first)
 
 
+def test_serving_rejects_corrupt_synthetic_artifact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from scripts.make_ci_bundle import make_bundle
+
+    fixture_root = tmp_path / "corrupt-fixture"
+    make_bundle(fixture_root)
+    monkeypatch.setenv("QRS_ALLOW_SYNTHETIC_FIXTURE", "1")
+    scores = next(fixture_root.rglob("scores.parquet"))
+    scores.write_bytes(scores.read_bytes() + b"corrupt")
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        ScoreStore(fixture_root)
+
+
+def test_serving_rejects_missing_synthetic_artifact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from scripts.make_ci_bundle import make_bundle
+
+    fixture_root = tmp_path / "missing-fixture"
+    make_bundle(fixture_root)
+    monkeypatch.setenv("QRS_ALLOW_SYNTHETIC_FIXTURE", "1")
+    scores = next(fixture_root.rglob("scores.parquet"))
+    scores.unlink()
+    with pytest.raises(ValueError, match="missing"):
+        ScoreStore(fixture_root)
+
+
 def test_saved_audit_when_local_artifacts_exist() -> None:
     root = Path(__file__).resolve().parents[1]
     if not (root / "reports" / "generated" / "milestone7" / "summary.json").is_file():
